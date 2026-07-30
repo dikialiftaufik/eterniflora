@@ -171,7 +171,7 @@ export default function LoginScreen() {
                   <Text style={styles.rememberText}>Ingat saya</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => router.push('/(auth)/forgot-password')}>
                   <Text style={styles.forgotText}>Lupa kata sandi?</Text>
                 </TouchableOpacity>
               </View>
