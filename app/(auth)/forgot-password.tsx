@@ -59,13 +59,29 @@ export default function ForgotPasswordScreen() {
     return () => blink.stop();
   }, [step]);
 
+  const fadeAnim = useRef(new Animated.Value(1)).current;
+
   const handleNextStep = () => {
+    if (!email.trim() && step === 1) return;
     setIsLoading(true);
     // Simulate network delay
     setTimeout(() => {
       setIsLoading(false);
       if (step < 3) {
-        setStep(step + 1);
+        // Fade out
+        Animated.timing(fadeAnim, {
+          toValue: 0,
+          duration: 150,
+          useNativeDriver: true,
+        }).start(() => {
+          setStep(step + 1);
+          // Fade in
+          Animated.timing(fadeAnim, {
+            toValue: 1,
+            duration: 250,
+            useNativeDriver: true,
+          }).start();
+        });
       } else {
         // Final step: Success
         setShowSuccessModal(true);
@@ -75,6 +91,25 @@ export default function ForgotPasswordScreen() {
         }, 2000);
       }
     }, 1500);
+  };
+
+  const handleBack = () => {
+    if (step > 1) {
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 150,
+        useNativeDriver: true,
+      }).start(() => {
+        setStep(step - 1);
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 250,
+          useNativeDriver: true,
+        }).start();
+      });
+    } else {
+      router.back();
+    }
   };
 
   const handleLoginLink = () => {
@@ -137,7 +172,7 @@ export default function ForgotPasswordScreen() {
 
       <SafeAreaView style={styles.safeArea}>
         {/* Back Button */}
-        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+        <TouchableOpacity style={styles.backButton} onPress={handleBack}>
           <FontAwesome name="angle-left" size={28} color={brand.textPrimary} />
         </TouchableOpacity>
 
@@ -184,9 +219,10 @@ export default function ForgotPasswordScreen() {
                 style={styles.cardAccentLine}
               />
 
-              {/* STEP 1: Email */}
-              {step === 1 && (
-                <View style={styles.stepContainer}>
+              <Animated.View style={[styles.stepContainer, { opacity: fadeAnim }]}>
+                {/* STEP 1: Email */}
+                {step === 1 && (
+                  <View style={styles.stepContent}>
                   <Text style={styles.inputLabel}>Email Terdaftar</Text>
                   <View style={styles.inputWrapper}>
                     <View style={styles.inputIconBox}>
@@ -228,27 +264,26 @@ export default function ForgotPasswordScreen() {
 
               {/* STEP 2: OTP */}
               {step === 2 && (
-                <View style={styles.stepContainer}>
-                  <Text style={styles.inputLabel}>Kode 6 Digit</Text>
-                  
-                  {/* Hidden TextInput for keyboard handling */}
-                  <TextInput
-                    ref={otpInputRef}
-                    style={styles.hiddenOtpInput}
-                    value={otp}
-                    onChangeText={setOtp}
-                    keyboardType="number-pad"
-                    maxLength={6}
-                    autoFocus
-                  />
-                  
-                  {/* Custom OTP UI */}
-                  <Pressable 
-                    style={styles.otpRow} 
-                    onPress={() => otpInputRef.current?.focus()}
-                  >
-                    {renderOtpBoxes()}
-                  </Pressable>
+                  <View style={styles.stepContent}>
+                    <Text style={styles.inputLabel}>Kode 6 Digit</Text>
+                    
+                    <View style={styles.otpWrapper}>
+                      {/* Custom OTP UI */}
+                      <View style={styles.otpRow} pointerEvents="none">
+                        {renderOtpBoxes()}
+                      </View>
+
+                      {/* Hidden TextInput covering the whole area to reliably open keyboard */}
+                      <TextInput
+                        ref={otpInputRef}
+                        style={styles.hiddenOtpInput}
+                        value={otp}
+                        onChangeText={setOtp}
+                        keyboardType="number-pad"
+                        maxLength={6}
+                        autoFocus
+                      />
+                    </View>
 
                   <TouchableOpacity
                     onPress={handleNextStep}
@@ -278,7 +313,7 @@ export default function ForgotPasswordScreen() {
 
               {/* STEP 3: New Password */}
               {step === 3 && (
-                <View style={styles.stepContainer}>
+                  <View style={styles.stepContent}>
                   <View style={styles.inputGroup}>
                     <Text style={styles.inputLabel}>Kata Sandi Baru</Text>
                     <View style={styles.inputWrapper}>
@@ -356,6 +391,7 @@ export default function ForgotPasswordScreen() {
                   </TouchableOpacity>
                 </View>
               )}
+              </Animated.View>
             </View>
             
             {/* Login Link */}
@@ -364,6 +400,19 @@ export default function ForgotPasswordScreen() {
               <TouchableOpacity onPress={handleLoginLink}>
                 <Text style={styles.registerLink}>Kembali ke Login</Text>
               </TouchableOpacity>
+            </View>
+
+            {/* Graphical Progress Indicator */}
+            <View style={styles.progressContainer}>
+              {[1, 2, 3].map((s) => (
+                <View
+                  key={s}
+                  style={[
+                    styles.progressDot,
+                    step === s ? styles.progressDotActive : styles.progressDotInactive,
+                  ]}
+                />
+              ))}
             </View>
 
           </ScrollView>
@@ -495,6 +544,9 @@ const styles = StyleSheet.create({
   stepContainer: {
     width: '100%',
   },
+  stepContent: {
+    width: '100%',
+  },
 
   // Input
   inputGroup: {
@@ -539,28 +591,33 @@ const styles = StyleSheet.create({
   },
 
   // OTP UI
+  otpWrapper: {
+    position: 'relative',
+    marginVertical: 20,
+  },
   hiddenOtpInput: {
     position: 'absolute',
-    width: 1,
-    height: 1,
+    width: '100%',
+    height: '100%',
     opacity: 0,
+    zIndex: 10,
   },
   otpRow: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginVertical: 10,
+    gap: 6,
   },
   otpBox: {
-    width: 42,
-    height: 54,
+    flex: 1,
+    aspectRatio: 0.8,
+    maxWidth: 52,
     borderRadius: 12,
     borderWidth: 1.5,
     borderColor: brand.border,
     backgroundColor: '#FAFAFE',
     justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal: 4,
   },
   otpBoxFocused: {
     borderColor: brand.primary,
@@ -581,7 +638,7 @@ const styles = StyleSheet.create({
     borderRadius: 2,
   },
   otpDashContainer: {
-    width: 14,
+    paddingHorizontal: 2,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -639,6 +696,27 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: brand.primary,
     fontWeight: '700',
+  },
+
+  // Graphical Progress
+  progressContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 40,
+    gap: 8,
+  },
+  progressDot: {
+    height: 6,
+    borderRadius: 3,
+  },
+  progressDotActive: {
+    width: 24,
+    backgroundColor: brand.primary,
+  },
+  progressDotInactive: {
+    width: 6,
+    backgroundColor: 'rgba(124, 58, 237, 0.2)',
   },
 
   // Modal
