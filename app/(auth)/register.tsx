@@ -11,6 +11,7 @@ import {
   StyleSheet,
   ActivityIndicator,
   Dimensions,
+  Modal,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -23,26 +24,36 @@ import { images } from '@/constants/images';
 
 const { width } = Dimensions.get('window');
 
-export default function LoginScreen() {
+export default function RegisterScreen() {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
-  const handleLogin = async () => {
-    if (!email.trim() || !password.trim()) return;
+  const handleRegister = async () => {
+    if (!name.trim() || !email.trim() || !password.trim() || !confirmPassword.trim()) return;
 
     setIsLoading(true);
-    // TODO: Replace with Supabase auth
+    
+    // Simulate API call for prototype
     setTimeout(() => {
       setIsLoading(false);
-      router.replace('/(tabs)');
+      setShowSuccessModal(true);
+      
+      // Auto redirect to login after 2 seconds
+      setTimeout(() => {
+        setShowSuccessModal(false);
+        router.replace('/(auth)/login');
+      }, 2000);
     }, 1500);
   };
 
-  const handleRegisterLink = () => {
-    router.push('/(auth)/register');
+  const handleLoginLink = () => {
+    router.replace('/(auth)/login');
   };
 
   return (
@@ -80,13 +91,13 @@ export default function LoginScreen() {
                 style={styles.logo}
                 resizeMode="contain"
               />
-              <Text style={styles.tagline}>Healing the Earth, Healing Yourself</Text>
+              <Text style={styles.tagline}>Mulai Perjalanan Anda</Text>
               <Text style={styles.subtitle}>
-                Masuk untuk mulai merakit buket aromaterapi{'\n'}dan berkontribusi untuk lingkungan 🌿
+                Daftar untuk merakit buket aromaterapi dan selamatkan lingkungan 🌿
               </Text>
             </View>
 
-            {/* Login Form Card */}
+            {/* Form Card */}
             <View style={styles.formCard}>
               {/* Decorative accent line at top of card */}
               <LinearGradient
@@ -96,7 +107,28 @@ export default function LoginScreen() {
                 style={styles.cardAccentLine}
               />
 
-              <Text style={styles.formTitle}>Masuk ke Akun</Text>
+              <Text style={styles.formTitle}>Daftar Akun</Text>
+
+              {/* Name Input */}
+              <View style={styles.inputGroup}>
+                <Text style={styles.inputLabel}>Nama Lengkap</Text>
+                <View style={styles.inputWrapper}>
+                  <View style={styles.inputIconBox}>
+                    <FontAwesome
+                      name="user-o"
+                      size={14}
+                      color={brand.primary}
+                    />
+                  </View>
+                  <TextInput
+                    style={styles.textInput}
+                    placeholder="Nama Anda"
+                    placeholderTextColor={brand.placeholder}
+                    value={name}
+                    onChangeText={setName}
+                  />
+                </View>
+              </View>
 
               {/* Email Input */}
               <View style={styles.inputGroup}>
@@ -156,38 +188,52 @@ export default function LoginScreen() {
                 </View>
               </View>
 
-              {/* Remember Me + Forgot Password */}
-              <View style={styles.rememberForgotRow}>
-                <TouchableOpacity
-                  style={styles.rememberButton}
-                  onPress={() => setRememberMe(!rememberMe)}
-                  activeOpacity={0.7}
-                >
-                  <View style={[styles.checkbox, rememberMe && styles.checkboxChecked]}>
-                    {rememberMe && (
-                      <FontAwesome name="check" size={10} color={brand.white} />
-                    )}
+              {/* Confirm Password Input */}
+              <View style={styles.inputGroup}>
+                <Text style={styles.inputLabel}>Konfirmasi Kata Sandi</Text>
+                <View style={styles.inputWrapper}>
+                  <View style={styles.inputIconBox}>
+                    <FontAwesome
+                      name="lock"
+                      size={15}
+                      color={brand.primary}
+                    />
                   </View>
-                  <Text style={styles.rememberText}>Ingat saya</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity>
-                  <Text style={styles.forgotText}>Lupa kata sandi?</Text>
-                </TouchableOpacity>
+                  <TextInput
+                    style={styles.textInput}
+                    placeholder="Ulangi kata sandi"
+                    placeholderTextColor={brand.placeholder}
+                    value={confirmPassword}
+                    onChangeText={setConfirmPassword}
+                    secureTextEntry={!showConfirmPassword}
+                  />
+                  <TouchableOpacity
+                    onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                    style={styles.eyeButton}
+                    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                  >
+                    <FontAwesome
+                      name={showConfirmPassword ? 'eye' : 'eye-slash'}
+                      size={18}
+                      color={brand.primary}
+                    />
+                  </TouchableOpacity>
+                </View>
               </View>
 
-              {/* Login Button — Gradient */}
+              {/* Register Button — Gradient */}
               <TouchableOpacity
-                onPress={handleLogin}
-                disabled={isLoading || !email.trim() || !password.trim()}
+                onPress={handleRegister}
+                disabled={isLoading || !name.trim() || !email.trim() || !password.trim() || !confirmPassword.trim()}
                 activeOpacity={0.85}
                 style={[
-                  (!email.trim() || !password.trim()) && styles.loginButtonDisabled,
+                  { marginTop: 12 },
+                  (!name.trim() || !email.trim() || !password.trim() || !confirmPassword.trim()) && styles.loginButtonDisabled,
                 ]}
               >
                 <LinearGradient
                   colors={
-                    !email.trim() || !password.trim()
+                    (!name.trim() || !email.trim() || !password.trim() || !confirmPassword.trim())
                       ? ['#C4B5FD', '#C4B5FD']
                       : ['#7C3AED', '#6D28D9']
                   }
@@ -199,8 +245,8 @@ export default function LoginScreen() {
                     <ActivityIndicator color={brand.white} size="small" />
                   ) : (
                     <View style={styles.loginButtonContent}>
-                      <FontAwesome name="sign-in" size={18} color={brand.white} />
-                      <Text style={styles.loginButtonText}>Masuk</Text>
+                      <FontAwesome name="user-plus" size={16} color={brand.white} />
+                      <Text style={styles.loginButtonText}>Daftar Sekarang</Text>
                     </View>
                   )}
                 </LinearGradient>
@@ -228,22 +274,37 @@ export default function LoginScreen() {
               {/* Google Sign In */}
               <TouchableOpacity style={styles.googleButton} activeOpacity={0.7}>
                 <FontAwesome name="google" size={18} color="#4B5563" />
-                <Text style={styles.googleButtonText}>Lanjutkan dengan Google</Text>
+                <Text style={styles.googleButtonText}>Daftar dengan Google</Text>
               </TouchableOpacity>
             </View>
 
-            {/* Register Link */}
+            {/* Login Link */}
             <View style={styles.registerRow}>
-              <Text style={styles.registerText}>Belum punya akun? </Text>
-              <TouchableOpacity onPress={handleRegisterLink}>
-                <Text style={styles.registerLink}>Daftar sekarang</Text>
+              <Text style={styles.registerText}>Sudah punya akun? </Text>
+              <TouchableOpacity onPress={handleLoginLink}>
+                <Text style={styles.registerLink}>Masuk sekarang</Text>
               </TouchableOpacity>
             </View>
-
-
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
+
+      {/* Success Modal */}
+      <Modal
+        visible={showSuccessModal}
+        transparent={true}
+        animationType="fade"
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalIconContainer}>
+              <FontAwesome name="check" size={32} color={brand.white} />
+            </View>
+            <Text style={styles.modalTitle}>Berhasil!</Text>
+            <Text style={styles.modalSubtitle}>Akun Anda berhasil dibuat. Mengarahkan ke halaman login...</Text>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -263,6 +324,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     justifyContent: 'center',
     paddingBottom: 24,
+    paddingTop: 12,
   },
 
   // Decorative orbs
@@ -302,8 +364,8 @@ const styles = StyleSheet.create({
     marginBottom: 28,
   },
   logo: {
-    width: 120,
-    height: 120,
+    width: 90,
+    height: 90,
     marginBottom: 16,
   },
   tagline: {
@@ -392,45 +454,7 @@ const styles = StyleSheet.create({
     padding: 4,
   },
 
-  // Remember Me + Forgot Password
-  rememberForgotRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 24,
-    marginTop: 4,
-  },
-  rememberButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  checkbox: {
-    width: 20,
-    height: 20,
-    borderRadius: 6,
-    borderWidth: 1.5,
-    borderColor: brand.border,
-    backgroundColor: brand.background,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  checkboxChecked: {
-    backgroundColor: brand.primary,
-    borderColor: brand.primary,
-  },
-  rememberText: {
-    fontSize: 13,
-    color: brand.textSecondary,
-    fontWeight: '500',
-  },
-  forgotText: {
-    fontSize: 13,
-    color: brand.primary,
-    fontWeight: '600',
-  },
-
-  // Login Button
+  // Register Button
   loginButton: {
     borderRadius: 999,
     height: 54,
@@ -499,7 +523,7 @@ const styles = StyleSheet.create({
     color: brand.textPrimary,
   },
 
-  // Register Link
+  // Login Link
   registerRow: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -514,5 +538,45 @@ const styles = StyleSheet.create({
     color: brand.primary,
     fontWeight: '700',
   },
-
+  
+  // Modal Styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: brand.white,
+    borderRadius: 24,
+    padding: 32,
+    alignItems: 'center',
+    width: '80%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.1,
+    shadowRadius: 20,
+    elevation: 10,
+  },
+  modalIconContainer: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: brand.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  modalTitle: {
+    fontSize: 22,
+    fontWeight: '800',
+    color: brand.textPrimary,
+    marginBottom: 10,
+  },
+  modalSubtitle: {
+    fontSize: 14,
+    color: brand.textSecondary,
+    textAlign: 'center',
+    lineHeight: 22,
+  },
 });
