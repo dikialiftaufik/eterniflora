@@ -5,6 +5,13 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 
+import {
+  PlayfairDisplay_400Regular,
+  PlayfairDisplay_700Bold,
+  PlayfairDisplay_800ExtraBold,
+} from '@expo-google-fonts/playfair-display';
+import { Lato_400Regular, Lato_700Bold } from '@expo-google-fonts/lato';
+
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
@@ -21,6 +28,11 @@ export default function RootLayout() {
   const [loaded, error] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     ...FontAwesome.font,
+    PlayfairDisplay_400Regular,
+    PlayfairDisplay_700Bold,
+    PlayfairDisplay_800ExtraBold,
+    Lato_400Regular,
+    Lato_700Bold,
   });
 
   useEffect(() => {

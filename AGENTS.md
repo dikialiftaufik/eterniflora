@@ -175,7 +175,9 @@ Do not approximate. Do not simplify unless explicitly asked.
 - **Dark eco wallet:** `#14532D` (Dark Green)
 - **Cards:** `border-radius: 20–24px`, subtle box shadow
 - **Buttons:** fully rounded pill shape (`border-radius: 999px`), minimum height 52px, purple gradient
-- **Typography:** Plus Jakarta Sans for headings, Inter for body text
+- **Typography:** 
+  - **Primary Font (Heading/Display): `Playfair Display`**. Khusus untuk elemen besar (judul halaman, angka utama/poin, branding). Menghadirkan karakter visual yang vokal, elegan, dan kontras ekstrem.
+  - **Secondary Font (Body/UI Text): `Lato`**. Untuk teks panjang, label form, deskripsi, dan navigasi (fokus pada legibility). Sebagai penyeimbang netral berpendekatan humanist & self-healing yang hangat, organik, dan menenangkan, sehingga menjaga cognitive load tetap rendah saat memindai layar mobile.
 - **Illustrations:** flat vector style, pastel purple/lavender palette
 
 ---

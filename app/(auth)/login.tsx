@@ -307,13 +307,13 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   tagline: {
-    fontSize: 17,
-    fontWeight: '700',
+    fontFamily: 'PlayfairDisplay_700Bold',
+    fontSize: 18,
     color: brand.primaryDark,
-    letterSpacing: 0.2,
     marginBottom: 6,
   },
   subtitle: {
+    fontFamily: 'Lato_400Regular',
     fontSize: 13,
     color: brand.textSecondary,
     textAlign: 'center',
@@ -343,8 +343,8 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 28,
   },
   formTitle: {
+    fontFamily: 'PlayfairDisplay_800ExtraBold',
     fontSize: 24,
-    fontWeight: '800',
     color: brand.textPrimary,
     marginTop: 4,
     marginBottom: 24,
@@ -355,8 +355,8 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   inputLabel: {
+    fontFamily: 'Lato_700Bold',
     fontSize: 12,
-    fontWeight: '700',
     color: brand.textSecondary,
     marginBottom: 8,
     textTransform: 'uppercase',
@@ -383,6 +383,7 @@ const styles = StyleSheet.create({
   },
   textInput: {
     flex: 1,
+    fontFamily: 'Lato_400Regular',
     fontSize: 15,
     color: brand.textPrimary,
     height: '100%',
@@ -420,14 +421,14 @@ const styles = StyleSheet.create({
     borderColor: brand.primary,
   },
   rememberText: {
+    fontFamily: 'Lato_400Regular',
     fontSize: 13,
     color: brand.textSecondary,
-    fontWeight: '500',
   },
   forgotText: {
+    fontFamily: 'Lato_700Bold',
     fontSize: 13,
     color: brand.primary,
-    fontWeight: '600',
   },
 
   // Login Button
@@ -452,9 +453,9 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   loginButtonText: {
+    fontFamily: 'Lato_700Bold',
     color: brand.white,
     fontSize: 16,
-    fontWeight: '700',
     letterSpacing: 0.3,
   },
 
@@ -477,9 +478,9 @@ const styles = StyleSheet.create({
     borderColor: brand.border,
   },
   dividerText: {
+    fontFamily: 'Lato_700Bold',
     fontSize: 12,
     color: brand.placeholder,
-    fontWeight: '500',
   },
 
   googleButton: {
@@ -494,8 +495,8 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   googleButtonText: {
+    fontFamily: 'Lato_700Bold',
     fontSize: 15,
-    fontWeight: '600',
     color: brand.textPrimary,
   },
 
@@ -506,13 +507,14 @@ const styles = StyleSheet.create({
     marginTop: 24,
   },
   registerText: {
+    fontFamily: 'Lato_400Regular',
     fontSize: 14,
     color: brand.textSecondary,
   },
   registerLink: {
+    fontFamily: 'Lato_700Bold',
     fontSize: 14,
     color: brand.primary,
-    fontWeight: '700',
   },
 
 });
