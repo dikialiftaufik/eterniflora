@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { LinearGradient } from 'expo-linear-gradient';
 import { brand } from '@/constants/Colors';
 
 const { width } = Dimensions.get('window');
@@ -24,161 +25,196 @@ const CIRCULARITY = [
 
 export default function HomeScreen() {
   return (
-    <SafeAreaView style={styles.safeArea} edges={['top']}>
-      {/* HEADER */}
-      <View style={styles.header}>
-        <View style={styles.headerProfile}>
-          <View style={styles.avatar}>
-            <Text style={styles.avatarText}>DA</Text>
+    <View style={styles.container}>
+      {/* SOFT BACKGROUND GRADIENT */}
+      <LinearGradient
+        colors={['rgba(124, 58, 237, 0.1)', 'rgba(255, 255, 255, 0)']}
+        style={StyleSheet.absoluteFillObject}
+        end={{ x: 0, y: 0.4 }}
+      />
+      <SafeAreaView style={styles.safeArea} edges={['top']}>
+        {/* HEADER */}
+        <View style={styles.header}>
+          <View style={styles.headerProfile}>
+            <View style={styles.avatar}>
+              <Text style={styles.avatarText}>DA</Text>
+            </View>
+            <View>
+              <Text style={styles.greeting}>Selamat pagi,</Text>
+              <Text style={styles.userName}>Diki Alif</Text>
+            </View>
           </View>
-          <View>
-            <Text style={styles.greeting}>Selamat pagi,</Text>
-            <Text style={styles.userName}>Diki Alif</Text>
+          
+          <View style={styles.headerActions}>
+            <TouchableOpacity style={styles.iconButton} activeOpacity={0.7}>
+              <FontAwesome name="shopping-cart" size={22} color={brand.textPrimary} />
+            </TouchableOpacity>
+            
+            <TouchableOpacity style={styles.iconButton} activeOpacity={0.7}>
+              <FontAwesome name="bell-o" size={22} color={brand.textPrimary} />
+              {/* Red Dot Indicator */}
+              <View style={styles.notificationDot} />
+            </TouchableOpacity>
           </View>
         </View>
-        <TouchableOpacity style={styles.pointsPill}>
-          <FontAwesome name="leaf" size={12} color={brand.primary} />
-          <Text style={styles.pointsText}>250 Points</Text>
-        </TouchableOpacity>
-      </View>
 
-      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        
-        {/* SECTION 1: HERO CAROUSEL */}
-        <ScrollView 
-          horizontal 
-          showsHorizontalScrollIndicator={false} 
-          contentContainerStyle={styles.heroCarousel}
-          snapToInterval={width * 0.85 + 16} // width of card + margin
-          decelerationRate="fast"
-        >
-          {/* Card 1: Breeze Bouquet */}
-          <View style={styles.heroCard}>
-            <View style={styles.badge}>
-              <Text style={styles.badgeText}>BEST SELLER</Text>
-            </View>
-            <Text style={styles.heroTitle}>AROMATHERAPY BREEZE BOUQUET</Text>
-            
-            <View style={styles.featureList}>
-              <View style={styles.featureItem}>
-                <View style={styles.featureIcon}>
-                  <FontAwesome name="recycle" size={12} color={brand.primary} />
-                </View>
-                <Text style={styles.featureText}>Upcycled Plastic Waste</Text>
-              </View>
-              <View style={styles.featureItem}>
-                <View style={styles.featureIcon}>
-                  <FontAwesome name="tint" size={12} color={brand.primary} />
-                </View>
-                <Text style={styles.featureText}>Aromatherapy Diffuser</Text>
-              </View>
-              <View style={styles.featureItem}>
-                <View style={styles.featureIcon}>
-                  <FontAwesome name="heart-o" size={12} color={brand.primary} />
-                </View>
-                <Text style={styles.featureText}>Mental Wellness Support</Text>
-              </View>
-            </View>
-
-            <View style={styles.heroFooter}>
-              <Text style={styles.heroPrice}>Rp150.000</Text>
-              <TouchableOpacity style={styles.buyButton}>
-                <Text style={styles.buyButtonText}>Beli Produk</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-
-          {/* Card 2: DIY Kit */}
-          <View style={[styles.heroCard, { backgroundColor: 'rgba(124, 58, 237, 0.05)' }]}>
-            <View style={styles.badge}>
-              <Text style={styles.badgeText}>RAKIT BUNGA, RAWAT DIRI</Text>
-            </View>
-            <Text style={styles.heroTitle}>DIY HEALING FLOWER KIT</Text>
-            <Text style={styles.heroDesc}>
-              Sesi aktivitas merakit yang meditatif untuk membantu mengurangi stres harian, 
-              meningkatkan fokus, dan memicu ketenangan batin.
-            </Text>
-            
-            <View style={[styles.heroFooter, { marginTop: 'auto' }]}>
-              <Text style={styles.heroPrice}>Rp100.000</Text>
-              <TouchableOpacity style={[styles.buyButton, { backgroundColor: brand.primaryDark }]}>
-                <Text style={styles.buyButtonText}>Pesan Kit</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </ScrollView>
-
-        {/* SECTION 2: DIY STEPS */}
-        <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>Cara Merakit DIY Kit</Text>
-          <Text style={styles.sectionSubtitle}>Ikuti enam alur langkah berikut sambil mendengarkan pemutar musik meditatif kami.</Text>
+        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
           
+          {/* SEARCH BAR */}
+          <View style={styles.searchContainer}>
+            <View style={styles.searchBar}>
+              <FontAwesome name="search" size={22} color={brand.textSecondary} style={styles.searchIcon} />
+              <TextInput 
+                style={styles.searchInput}
+                placeholder="Cari buket atau kit..."
+                placeholderTextColor={brand.placeholder}
+                selectionColor={brand.primary}
+              />
+              <TouchableOpacity style={styles.filterButton} activeOpacity={0.7}>
+                <FontAwesome name="sliders" size={22} color={brand.primaryDark} />
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* SECTION 1: HERO CAROUSEL */}
           <ScrollView 
             horizontal 
             showsHorizontalScrollIndicator={false} 
-            contentContainerStyle={styles.stepsCarousel}
+            contentContainerStyle={styles.heroCarousel}
+            snapToInterval={width * 0.85 + 16} // width of card + margin
+            decelerationRate="fast"
           >
-            {DIY_STEPS.map((step) => (
-              <View key={step.id} style={styles.stepCard}>
-                <View style={styles.stepNumberBadge}>
-                  <Text style={styles.stepNumberText}>{step.id}</Text>
-                </View>
-                <FontAwesome name={step.icon as any} size={28} color={brand.primary} style={styles.stepIcon} />
-                <Text style={styles.stepTitle}>{step.title}</Text>
-                <Text style={styles.stepDesc}>{step.desc}</Text>
+            {/* Card 1: Breeze Bouquet */}
+            <View style={styles.heroCard}>
+              <View style={styles.badge}>
+                <Text style={styles.badgeText}>BEST SELLER</Text>
               </View>
-            ))}
+              <Text style={styles.heroTitle}>AROMATHERAPY BREEZE BOUQUET</Text>
+              
+              <View style={styles.featureList}>
+                <View style={styles.featureItem}>
+                  <View style={styles.featureIcon}>
+                    <FontAwesome name="recycle" size={12} color={brand.primary} />
+                  </View>
+                  <Text style={styles.featureText}>Upcycled Plastic Waste</Text>
+                </View>
+                <View style={styles.featureItem}>
+                  <View style={styles.featureIcon}>
+                    <FontAwesome name="tint" size={12} color={brand.primary} />
+                  </View>
+                  <Text style={styles.featureText}>Aromatherapy Diffuser</Text>
+                </View>
+                <View style={styles.featureItem}>
+                  <View style={styles.featureIcon}>
+                    <FontAwesome name="heart-o" size={12} color={brand.primary} />
+                  </View>
+                  <Text style={styles.featureText}>Mental Wellness Support</Text>
+                </View>
+              </View>
+
+              <View style={styles.heroFooter}>
+                <Text style={styles.heroPrice}>Rp150.000</Text>
+                <TouchableOpacity style={styles.buyButton}>
+                  <Text style={styles.buyButtonText}>Beli Produk</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            {/* Card 2: DIY Kit */}
+            <View style={[styles.heroCard, { backgroundColor: '#F3EFFF' }]}>
+              <View style={styles.badge}>
+                <Text style={styles.badgeText}>RAKIT BUNGA, RAWAT DIRI</Text>
+              </View>
+              <Text style={styles.heroTitle}>DIY HEALING FLOWER KIT</Text>
+              <Text style={styles.heroDesc}>
+                Sesi aktivitas merakit yang meditatif untuk membantu mengurangi stres harian, 
+                meningkatkan fokus, dan memicu ketenangan batin.
+              </Text>
+              
+              <View style={[styles.heroFooter, { marginTop: 'auto' }]}>
+                <Text style={styles.heroPrice}>Rp100.000</Text>
+                <TouchableOpacity style={[styles.buyButton, { backgroundColor: brand.primaryDark }]}>
+                  <Text style={styles.buyButtonText}>Pesan Kit</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
           </ScrollView>
-        </View>
 
-        {/* SECTION 3: SENSASI AROMATERAPI */}
-        <View style={styles.darkCard}>
-          <View style={[styles.badge, { backgroundColor: 'rgba(255,255,255,0.1)' }]}>
-            <Text style={[styles.badgeText, { color: brand.white }]}>AROMATHERAPY FUNCTION</Text>
-          </View>
-          <Text style={styles.darkCardTitle}>Sensasi Aromaterapi Penenang</Text>
-          <Text style={styles.darkCardDesc}>
-            Kelopak bunga berbahan daur ulang botol plastik dirancang memiliki serat pori mikro 
-            yang ideal dalam menampung dan merilis essential oil murni secara bertahap.
-          </Text>
-          
-          <TouchableOpacity style={styles.darkCardButton}>
-            <Text style={styles.darkCardButtonText}>Dapatkan Ketenangan</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* SECTION 4: SIRKULARITAS */}
-        <View style={styles.sectionContainer}>
-          <View style={[styles.badge, { alignSelf: 'flex-start', marginLeft: 24, marginBottom: 12 }]}>
-            <Text style={styles.badgeText}>SUSTAINABLE BY DESIGN</Text>
-          </View>
-          <Text style={[styles.sectionTitle, { paddingHorizontal: 24 }]}>Sirkularitas Tanpa Limbah</Text>
-          <Text style={[styles.sectionSubtitle, { paddingHorizontal: 24 }]}>Setiap pembelian produk ikut menggerakkan ekonomi sirkular lokal.</Text>
-
-          <View style={styles.gridContainer}>
-            {CIRCULARITY.map((item) => (
-              <View key={item.id} style={styles.gridItem}>
-                <View style={styles.gridIconCircle}>
-                  <FontAwesome name={item.icon as any} size={20} color={brand.primary} />
+          {/* SECTION 2: DIY STEPS */}
+          <View style={styles.sectionContainer}>
+            <Text style={styles.sectionTitle}>Cara Merakit DIY Kit</Text>
+            <Text style={styles.sectionSubtitle}>Ikuti enam alur langkah berikut sambil mendengarkan pemutar musik meditatif kami.</Text>
+            
+            <ScrollView 
+              horizontal 
+              showsHorizontalScrollIndicator={false} 
+              contentContainerStyle={styles.stepsCarousel}
+            >
+              {DIY_STEPS.map((step) => (
+                <View key={step.id} style={styles.stepCard}>
+                  <View style={styles.stepNumberBadge}>
+                    <Text style={styles.stepNumberText}>{step.id}</Text>
+                  </View>
+                  <FontAwesome name={step.icon as any} size={28} color={brand.primary} style={styles.stepIcon} />
+                  <Text style={styles.stepTitle}>{step.title}</Text>
+                  <Text style={styles.stepDesc}>{step.desc}</Text>
                 </View>
-                <Text style={styles.gridTitle}>{item.title}</Text>
-                <Text style={styles.gridDesc}>{item.desc}</Text>
-              </View>
-            ))}
+              ))}
+            </ScrollView>
           </View>
-        </View>
 
-        {/* EXTRA PADDING FOR TAB BAR */}
-        <View style={{ height: 100 }} />
-      </ScrollView>
-    </SafeAreaView>
+          {/* SECTION 3: SENSASI AROMATERAPI */}
+          <View style={styles.darkCard}>
+            <View style={[styles.badge, { backgroundColor: 'rgba(255,255,255,0.1)' }]}>
+              <Text style={[styles.badgeText, { color: brand.white }]}>AROMATHERAPY FUNCTION</Text>
+            </View>
+            <Text style={styles.darkCardTitle}>Sensasi Aromaterapi Penenang</Text>
+            <Text style={styles.darkCardDesc}>
+              Kelopak bunga berbahan daur ulang botol plastik dirancang memiliki serat pori mikro 
+              yang ideal dalam menampung dan merilis essential oil murni secara bertahap.
+            </Text>
+            
+            <TouchableOpacity style={styles.darkCardButton}>
+              <Text style={styles.darkCardButtonText}>Dapatkan Ketenangan</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* SECTION 4: SIRKULARITAS */}
+          <View style={styles.sectionContainer}>
+            <View style={[styles.badge, { alignSelf: 'flex-start', marginLeft: 24, marginBottom: 12 }]}>
+              <Text style={styles.badgeText}>SUSTAINABLE BY DESIGN</Text>
+            </View>
+            <Text style={[styles.sectionTitle, { paddingHorizontal: 24 }]}>Sirkularitas Tanpa Limbah</Text>
+            <Text style={[styles.sectionSubtitle, { paddingHorizontal: 24 }]}>Setiap pembelian produk ikut menggerakkan ekonomi sirkular lokal.</Text>
+
+            <View style={styles.gridContainer}>
+              {CIRCULARITY.map((item) => (
+                <View key={item.id} style={styles.gridItem}>
+                  <View style={styles.gridIconCircle}>
+                    <FontAwesome name={item.icon as any} size={20} color={brand.primary} />
+                  </View>
+                  <Text style={styles.gridTitle}>{item.title}</Text>
+                  <Text style={styles.gridDesc}>{item.desc}</Text>
+                </View>
+              ))}
+            </View>
+          </View>
+
+          {/* EXTRA PADDING FOR TAB BAR */}
+          <View style={{ height: 100 }} />
+        </ScrollView>
+      </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
+  container: {
     flex: 1,
     backgroundColor: brand.background,
+  },
+  safeArea: {
+    flex: 1,
   },
   scrollContent: {
     paddingBottom: 24,
@@ -190,7 +226,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 24,
-    paddingVertical: 16,
+    paddingTop: 16,
+    paddingBottom: 24, // Added more padding to let it breathe like the reference
   },
   headerProfile: {
     flexDirection: 'row',
@@ -198,9 +235,9 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   avatar: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 48, // Slightly larger avatar
+    height: 48,
+    borderRadius: 24,
     backgroundColor: 'rgba(124, 58, 237, 0.1)',
     justifyContent: 'center',
     alignItems: 'center',
@@ -208,31 +245,86 @@ const styles = StyleSheet.create({
   avatarText: {
     fontFamily: 'Lato_700Bold',
     fontSize: 16,
-    color: brand.primary,
+    color: brand.primary, // Vibrant purple
   },
   greeting: {
     fontFamily: 'Lato_400Regular',
     fontSize: 12,
     color: brand.textSecondary,
+    marginBottom: 4,
   },
   userName: {
-    fontFamily: 'PlayfairDisplay_700Bold',
-    fontSize: 16,
+    fontFamily: 'Lato_700Bold', // Changed to sans-serif for a cleaner, modern look
+    fontSize: 16, 
     color: brand.textPrimary,
   },
-  pointsPill: {
+  headerActions: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(124, 58, 237, 0.08)',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 999,
-    gap: 6,
+    gap: 12, // Adjusted gap to fit the new circular backgrounds
   },
-  pointsText: {
-    fontFamily: 'Lato_700Bold',
-    fontSize: 13,
-    color: brand.primary,
+  iconButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: brand.white,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: brand.primaryDark,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.04,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  notificationDot: {
+    position: 'absolute',
+    top: 12,
+    right: 12,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#EF4444', 
+    borderWidth: 1.5,
+    borderColor: brand.white, // Matches the new white background
+  },
+
+  // Search Bar
+  searchContainer: {
+    paddingHorizontal: 24,
+    marginBottom: 24, // Consistent spacing before the carousel
+  },
+  searchBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: brand.white,
+    borderRadius: 999, // Pill shape for a modern, friendly feel
+    paddingLeft: 20,
+    paddingRight: 8, // Creates an 8px even gap (top, bottom, right) for the 44px filter button
+    height: 60, // Increased height to give the 44x44 filter button room to breathe
+    shadowColor: brand.primaryDark,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.04,
+    shadowRadius: 12,
+    elevation: 2,
+  },
+  searchIcon: {
+    marginRight: 14,
+  },
+  searchInput: {
+    flex: 1,
+    fontFamily: 'Lato_400Regular',
+    fontSize: 15, // Increased slightly to balance with the 60px height and 22px icons
+    color: brand.textPrimary,
+    height: '100%',
+  },
+  filterButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: 'rgba(124, 58, 237, 0.08)', // Harmonious background matching the header icons
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 8,
   },
 
   // General Badges
