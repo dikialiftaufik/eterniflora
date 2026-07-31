@@ -276,8 +276,13 @@ export default function HomeScreen() {
           </View>
 
           {/* SECTION 3: SENSASI AROMATERAPI */}
-          <View style={styles.darkCard}>
-            <View style={[styles.badge, { backgroundColor: 'rgba(255,255,255,0.1)' }]}>
+          <LinearGradient 
+            colors={[brand.primaryDark, brand.primary]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.darkCard}
+          >
+            <View style={[styles.badge, { marginBottom: 8, backgroundColor: 'rgba(255,255,255,0.1)', borderColor: 'rgba(255,255,255,0.2)' }]}>
               <Text style={[styles.badgeText, { color: brand.white }]}>AROMATHERAPY FUNCTION</Text>
             </View>
             <Text style={styles.darkCardTitle}>Sensasi Aromaterapi Penenang</Text>
@@ -289,13 +294,10 @@ export default function HomeScreen() {
             <TouchableOpacity style={styles.darkCardButton}>
               <Text style={styles.darkCardButtonText}>Dapatkan Ketenangan</Text>
             </TouchableOpacity>
-          </View>
+          </LinearGradient>
 
           {/* SECTION 4: SIRKULARITAS */}
           <View style={styles.sectionContainer}>
-            <View style={[styles.badge, { alignSelf: 'flex-start', marginLeft: 24, marginBottom: 12 }]}>
-              <Text style={styles.badgeText}>SUSTAINABLE BY DESIGN</Text>
-            </View>
             <Text style={[styles.sectionTitle, { paddingHorizontal: 24 }]}>Sirkularitas Tanpa Limbah</Text>
             <Text style={[styles.sectionSubtitle, { paddingHorizontal: 24 }]}>Setiap pembelian produk ikut menggerakkan ekonomi sirkular lokal.</Text>
 
@@ -309,6 +311,16 @@ export default function HomeScreen() {
                   <Text style={styles.gridDesc}>{item.desc}</Text>
                 </View>
               ))}
+            </View>
+
+            {/* ECO POINTS CTA */}
+            <View style={styles.ecoCtaContainer}>
+              <Text style={styles.ecoCtaText}>
+                Mari bergabung bersama <Text style={{ fontFamily: 'Lato_700Bold', color: brand.textPrimary }}>12.750+ Heroes</Text> penggerak lingkungan di Bandung!
+              </Text>
+              <TouchableOpacity style={styles.ecoCtaButton} activeOpacity={0.8}>
+                <Text style={styles.ecoCtaButtonText}>Pelajari Eco Points</Text>
+              </TouchableOpacity>
             </View>
           </View>
 
@@ -892,25 +904,24 @@ const styles = StyleSheet.create({
   // Section 3: Dark Card
   darkCard: {
     marginHorizontal: 24,
-    marginVertical: 24,
-    backgroundColor: brand.primaryDark,
-    borderRadius: 24,
-    padding: 24,
+    marginVertical: 16, // Reduced outer margin
+    borderRadius: 20,
+    paddingHorizontal: 20, // Reduced from 24
+    paddingVertical: 18, // Reduced from 24 (~25% compression)
     alignItems: 'flex-start',
   },
   darkCardTitle: {
-    fontFamily: 'PlayfairDisplay_800ExtraBold',
-    fontSize: 28,
+    fontFamily: 'PlayfairDisplay_700Bold',
+    fontSize: 21, // Reduced from 24 to prevent awkward 3-line wrap
     color: brand.white,
-    marginBottom: 16,
-    lineHeight: 34,
+    marginBottom: 8, // Reduced from 12
   },
   darkCardDesc: {
     fontFamily: 'Lato_400Regular',
-    fontSize: 14,
-    color: 'rgba(255,255,255,0.8)',
-    lineHeight: 22,
-    marginBottom: 24,
+    fontSize: 12,
+    color: 'rgba(255, 255, 255, 0.8)',
+    lineHeight: 18, // Line height maintained
+    marginBottom: 20, // Reduced from 24
   },
   darkCardButton: {
     alignSelf: 'stretch',
@@ -942,13 +953,13 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(124, 58, 237, 0.06)',
   },
   gridIconCircle: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     backgroundColor: brand.white,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 12,
     shadowColor: brand.primaryDark,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.04,
@@ -957,16 +968,49 @@ const styles = StyleSheet.create({
   },
   gridTitle: {
     fontFamily: 'Lato_700Bold',
-    fontSize: 14,
+    fontSize: 12,
     color: brand.textPrimary,
     textAlign: 'center',
     marginBottom: 6,
+    lineHeight: 16,
   },
   gridDesc: {
     fontFamily: 'Lato_400Regular',
-    fontSize: 12,
+    fontSize: 10,
     color: brand.textSecondary,
     textAlign: 'center',
+    lineHeight: 14,
+  },
+
+  // Eco Points CTA
+  ecoCtaContainer: {
+    marginHorizontal: 24,
+    marginTop: 24,
+    backgroundColor: '#F8F9FA',
+    borderRadius: 16,
+    padding: 16,
+    flexDirection: 'column', // Stack vertically for mobile
+    alignItems: 'stretch', // Button fills width
+    borderWidth: 1,
+    borderColor: 'rgba(0,0,0,0.05)',
+  },
+  ecoCtaText: {
+    fontFamily: 'Lato_400Regular',
+    fontSize: 12,
+    color: brand.textSecondary,
     lineHeight: 18,
+    textAlign: 'center', // Center text
+    marginBottom: 16, // Space above button
+  },
+  ecoCtaButton: {
+    backgroundColor: brand.primaryDark,
+    paddingVertical: 12, // Increased touch target height
+    borderRadius: 8,
+    alignItems: 'center', // Center button text
+  },
+  ecoCtaButtonText: {
+    fontFamily: 'Lato_700Bold',
+    fontSize: 12,
+    color: brand.white,
   },
 });
