@@ -256,15 +256,20 @@ export default function HomeScreen() {
               horizontal 
               showsHorizontalScrollIndicator={false} 
               contentContainerStyle={styles.stepsCarousel}
+              snapToInterval={126} // Smoothly snap to each step (110 width + 16 margin)
+              decelerationRate="fast"
             >
-              {DIY_STEPS.map((step) => (
-                <View key={step.id} style={styles.stepCard}>
-                  <View style={styles.stepNumberBadge}>
-                    <Text style={styles.stepNumberText}>{step.id}</Text>
+              {DIY_STEPS.map((step, index) => (
+                <View key={step.id} style={styles.stepperItem}>
+                  {/* Tali Penghubung (Connecting Line) */}
+                  {index < DIY_STEPS.length - 1 && <View style={styles.stepperLine} />}
+                  
+                  <View style={styles.stepperCircle}>
+                    <FontAwesome name={step.icon as any} size={20} color={brand.primary} />
                   </View>
-                  <FontAwesome name={step.icon as any} size={28} color={brand.primary} style={styles.stepIcon} />
-                  <Text style={styles.stepTitle}>{step.title}</Text>
-                  <Text style={styles.stepDesc}>{step.desc}</Text>
+                  <Text style={styles.stepperStepLabel}>LANGKAH {step.id}</Text>
+                  <Text style={styles.stepperTitle}>{step.title}</Text>
+                  <Text style={styles.stepperDesc} numberOfLines={3}>{step.desc}</Text>
                 </View>
               ))}
             </ScrollView>
@@ -827,54 +832,61 @@ const styles = StyleSheet.create({
   // Section 2: Steps
   stepsCarousel: {
     paddingHorizontal: 24,
-    gap: 16,
+    paddingTop: 8,
     paddingBottom: 16,
   },
-  stepCard: {
-    width: 160,
-    backgroundColor: brand.white,
-    borderRadius: 20,
-    padding: 20,
-    shadowColor: brand.primaryDark,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.04,
-    shadowRadius: 8,
-    elevation: 2,
+  stepperItem: {
+    width: 110, // Compact width to fit 3 steps comfortably
     alignItems: 'center',
+    marginRight: 16,
+    position: 'relative',
   },
-  stepNumberBadge: {
+  stepperLine: {
     position: 'absolute',
-    top: 12,
-    left: 12,
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: 'rgba(124, 58, 237, 0.1)',
+    top: 22, // Center of the 44px circle
+    left: '50%', // Start from the center of current circle
+    width: 126, // Reach the center of the next circle (110 width + 16 margin)
+    height: 2,
+    backgroundColor: 'rgba(124, 58, 237, 0.2)',
+    zIndex: 1, // Stay behind the circle
+  },
+  stepperCircle: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: brand.white,
     justifyContent: 'center',
     alignItems: 'center',
+    zIndex: 2, // Stay above the connecting line
+    shadowColor: brand.primaryDark,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
+    marginBottom: 12,
   },
-  stepNumberText: {
+  stepperStepLabel: {
     fontFamily: 'Lato_700Bold',
-    fontSize: 12,
-    color: brand.primary,
-  },
-  stepIcon: {
-    marginTop: 16,
-    marginBottom: 16,
-  },
-  stepTitle: {
-    fontFamily: 'Lato_700Bold',
-    fontSize: 14,
-    color: brand.textPrimary,
-    textAlign: 'center',
-    marginBottom: 8,
-  },
-  stepDesc: {
-    fontFamily: 'Lato_400Regular',
-    fontSize: 12,
+    fontSize: 9,
     color: brand.textSecondary,
     textAlign: 'center',
-    lineHeight: 18,
+    marginBottom: 4,
+    letterSpacing: 0.5,
+  },
+  stepperTitle: {
+    fontFamily: 'Lato_700Bold',
+    fontSize: 12,
+    color: brand.textPrimary,
+    textAlign: 'center',
+    marginBottom: 6,
+    lineHeight: 16,
+  },
+  stepperDesc: {
+    fontFamily: 'Lato_400Regular',
+    fontSize: 10,
+    color: brand.textSecondary,
+    textAlign: 'center',
+    lineHeight: 14,
   },
 
   // Section 3: Dark Card
