@@ -1,11 +1,42 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions, TextInput } from 'react-native';
+import React, { useState, useRef, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions, TextInput, FlatList, Image, Modal, Animated } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { LinearGradient } from 'expo-linear-gradient';
 import { brand } from '@/constants/Colors';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
+
+const BANNERS = [
+  {
+    id: '1',
+    badge: 'BEST SELLER',
+    title: 'Aromatherapy Breeze Bouquet',
+    desc: 'Buket bunga eksklusif dari limbah botol plastik daur ulang dengan fungsi aromaterapi penenang pikiran.',
+    price: 'Rp150.000',
+    bgColor: brand.white,
+    imageUrl: 'https://images.unsplash.com/photo-1591886960571-74d43a9d4166?q=80&w=400&auto=format&fit=crop', // Bouquet Placeholder
+    features: [
+      { text: 'Upcycled Plastic Waste', icon: 'recycle' },
+      { text: 'Aromatherapy Diffuser', icon: 'tint' },
+      { text: 'Mental Wellness Support', icon: 'heart-o' },
+    ]
+  },
+  {
+    id: '2',
+    badge: 'RAKIT BUNGA, RAWAT DIRI',
+    title: 'DIY Healing Flower Kit',
+    desc: 'Sesi aktivitas merakit yang meditatif untuk mengurangi stres harian, melatih fokus, dan memicu ketenangan batin.',
+    price: 'Rp100.000',
+    bgColor: '#F3EFFF',
+    imageSource: require('@/assets/images/diy-kit.png'), // Local image asset
+    features: [
+      { text: 'Guided Meditation Audio', icon: 'headphones' },
+      { text: 'Reduce Daily Stress', icon: 'leaf' },
+      { text: 'Build Focus & Patience', icon: 'puzzle-piece' },
+    ]
+  }
+];
 
 const DIY_STEPS = [
   { id: 1, title: 'Siapkan komponen', desc: 'Siapkan semua kelopak, stik, & botol kit.', icon: 'cube' },
@@ -24,8 +55,115 @@ const CIRCULARITY = [
 ];
 
 export default function HomeScreen() {
+  const [activeBannerIndex, setActiveBannerIndex] = useState(0);
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  
+  // New Cart & Animation State
+  const [cartCount, setCartCount] = useState(0);
+  const [toastMessage, setToastMessage] = useState('');
+  
+  const flatListRef = useRef<FlatList>(null);
+  
+  // Animated Values
+  const scrollY = useRef(new Animated.Value(0)).current;
+  const toastAnim = useRef(new Animated.Value(150)).current; // Start hidden below the screen
+
+  // Auto-scroll logic
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      let nextIndex = activeBannerIndex + 1;
+      if (nextIndex >= BANNERS.length) {
+        nextIndex = 0;
+      }
+      flatListRef.current?.scrollToIndex({ index: nextIndex, animated: true });
+      setActiveBannerIndex(nextIndex);
+    }, 4000); // 4 seconds delay
+
+    return () => clearInterval(intervalId);
+  }, [activeBannerIndex]);
+
+  const handleScroll = (event: any) => {
+    const slideSize = event.nativeEvent.layoutMeasurement.width;
+    const index = event.nativeEvent.contentOffset.x / slideSize;
+    const roundIndex = Math.round(index);
+    if (roundIndex !== activeBannerIndex && roundIndex >= 0 && roundIndex < BANNERS.length) {
+      setActiveBannerIndex(roundIndex);
+    }
+  };
+
+  const openProductModal = (product: any) => {
+    scrollY.setValue(0); // Reset scroll position for modal
+    setSelectedProduct(product);
+    setIsModalVisible(true);
+  };
+
+  const triggerToast = (message: string) => {
+    setToastMessage(message);
+    Animated.sequence([
+      Animated.timing(toastAnim, {
+        toValue: -120, // Slide UP into view (safely above the bottom tab bar)
+        duration: 400,
+        useNativeDriver: true,
+      }),
+      Animated.delay(2500), // Wait
+      Animated.timing(toastAnim, {
+        toValue: 150, // Slide back down off-screen
+        duration: 300,
+        useNativeDriver: true,
+      })
+    ]).start();
+  };
+
+  const handleAddToCart = () => {
+    setCartCount(prev => prev + 1);
+    setIsModalVisible(false);
+    triggerToast('1 Produk ditambahkan ke keranjang!');
+  };
+
+  const imageTranslateY = scrollY.interpolate({
+    inputRange: [-100, 0, 260],
+    outputRange: [0, 0, -130], // Move up half the scroll distance (parallax)
+    extrapolate: 'clamp',
+  });
+
+  const imageScale = scrollY.interpolate({
+    inputRange: [-100, 0],
+    outputRange: [1.5, 1], // Scale up when pulled down
+    extrapolate: 'clamp',
+  });
+
+  const renderBanner = ({ item }: { item: any }) => (
+    <View style={styles.bannerSlide}>
+      <View style={[styles.bannerCard, { backgroundColor: item.bgColor }]}>
+        <View style={styles.bannerContent}>
+          <View style={styles.badgeSmall}>
+            <Text style={styles.badgeTextSmall}>{item.badge}</Text>
+          </View>
+          <Text style={styles.bannerTitle} numberOfLines={2}>{item.title}</Text>
+          <TouchableOpacity 
+            style={styles.bannerButton} 
+            activeOpacity={0.8}
+            onPress={() => openProductModal(item)}
+          >
+            <Text style={styles.bannerButtonText}>Lihat Selengkapnya</Text>
+          </TouchableOpacity>
+        </View>
+        <Image source={item.imageSource ? item.imageSource : { uri: item.imageUrl }} style={styles.bannerImage} />
+      </View>
+    </View>
+  );
+
   return (
     <View style={styles.container}>
+      {/* CUSTOM TOAST NOTIFICATION */}
+      <Animated.View style={[styles.toastContainer, { transform: [{ translateY: toastAnim }] }]}>
+        <View style={styles.toastContent}>
+          <FontAwesome name="check-circle" size={20} color={brand.primary} />
+          <Text style={styles.toastText}>{toastMessage}</Text>
+        </View>
+      </Animated.View>
+
       {/* SOFT BACKGROUND GRADIENT */}
       <LinearGradient
         colors={['rgba(124, 58, 237, 0.1)', 'rgba(255, 255, 255, 0)']}
@@ -48,6 +186,12 @@ export default function HomeScreen() {
           <View style={styles.headerActions}>
             <TouchableOpacity style={styles.iconButton} activeOpacity={0.7}>
               <FontAwesome name="shopping-cart" size={22} color={brand.textPrimary} />
+              {/* Cart Badge */}
+              {cartCount > 0 && (
+                <View style={styles.cartBadge}>
+                  <Text style={styles.cartBadgeText}>{cartCount}</Text>
+                </View>
+              )}
             </TouchableOpacity>
             
             <TouchableOpacity style={styles.iconButton} activeOpacity={0.7}>
@@ -76,69 +220,32 @@ export default function HomeScreen() {
             </View>
           </View>
 
-          {/* SECTION 1: HERO CAROUSEL */}
-          <ScrollView 
-            horizontal 
-            showsHorizontalScrollIndicator={false} 
-            contentContainerStyle={styles.heroCarousel}
-            snapToInterval={width * 0.85 + 16} // width of card + margin
-            decelerationRate="fast"
-          >
-            {/* Card 1: Breeze Bouquet */}
-            <View style={styles.heroCard}>
-              <View style={styles.badge}>
-                <Text style={styles.badgeText}>BEST SELLER</Text>
-              </View>
-              <Text style={styles.heroTitle}>AROMATHERAPY BREEZE BOUQUET</Text>
-              
-              <View style={styles.featureList}>
-                <View style={styles.featureItem}>
-                  <View style={styles.featureIcon}>
-                    <FontAwesome name="recycle" size={12} color={brand.primary} />
-                  </View>
-                  <Text style={styles.featureText}>Upcycled Plastic Waste</Text>
-                </View>
-                <View style={styles.featureItem}>
-                  <View style={styles.featureIcon}>
-                    <FontAwesome name="tint" size={12} color={brand.primary} />
-                  </View>
-                  <Text style={styles.featureText}>Aromatherapy Diffuser</Text>
-                </View>
-                <View style={styles.featureItem}>
-                  <View style={styles.featureIcon}>
-                    <FontAwesome name="heart-o" size={12} color={brand.primary} />
-                  </View>
-                  <Text style={styles.featureText}>Mental Wellness Support</Text>
-                </View>
-              </View>
-
-              <View style={styles.heroFooter}>
-                <Text style={styles.heroPrice}>Rp150.000</Text>
-                <TouchableOpacity style={styles.buyButton}>
-                  <Text style={styles.buyButtonText}>Beli Produk</Text>
-                </TouchableOpacity>
-              </View>
+          {/* SECTION 1: AUTO-PLAY LANDSCAPE BANNERS */}
+          <View>
+            <FlatList
+              ref={flatListRef}
+              data={BANNERS}
+              renderItem={renderBanner}
+              keyExtractor={(item) => item.id}
+              horizontal
+              pagingEnabled
+              showsHorizontalScrollIndicator={false}
+              onMomentumScrollEnd={handleScroll}
+              decelerationRate="fast"
+            />
+            {/* BANNER PAGINATION DOTS */}
+            <View style={styles.paginationContainer}>
+              {BANNERS.map((_, index) => (
+                <View 
+                  key={index} 
+                  style={[
+                    styles.dot, 
+                    activeBannerIndex === index ? styles.activeDot : styles.inactiveDot
+                  ]} 
+                />
+              ))}
             </View>
-
-            {/* Card 2: DIY Kit */}
-            <View style={[styles.heroCard, { backgroundColor: '#F3EFFF' }]}>
-              <View style={styles.badge}>
-                <Text style={styles.badgeText}>RAKIT BUNGA, RAWAT DIRI</Text>
-              </View>
-              <Text style={styles.heroTitle}>DIY HEALING FLOWER KIT</Text>
-              <Text style={styles.heroDesc}>
-                Sesi aktivitas merakit yang meditatif untuk membantu mengurangi stres harian, 
-                meningkatkan fokus, dan memicu ketenangan batin.
-              </Text>
-              
-              <View style={[styles.heroFooter, { marginTop: 'auto' }]}>
-                <Text style={styles.heroPrice}>Rp100.000</Text>
-                <TouchableOpacity style={[styles.buyButton, { backgroundColor: brand.primaryDark }]}>
-                  <Text style={styles.buyButtonText}>Pesan Kit</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </ScrollView>
+          </View>
 
           {/* SECTION 2: DIY STEPS */}
           <View style={styles.sectionContainer}>
@@ -204,6 +311,84 @@ export default function HomeScreen() {
           <View style={{ height: 100 }} />
         </ScrollView>
       </SafeAreaView>
+
+      {/* PRODUCT DETAILS MODAL */}
+      <Modal
+        visible={isModalVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setIsModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            {/* Close Button overlapping image */}
+            <TouchableOpacity 
+              style={styles.modalCloseButton} 
+              onPress={() => setIsModalVisible(false)}
+              activeOpacity={0.7}
+            >
+              <FontAwesome name="times" size={16} color={brand.textPrimary} />
+            </TouchableOpacity>
+
+            {selectedProduct && (
+              <>
+                {/* Absolute Parallax Image */}
+                <Animated.Image 
+                  source={selectedProduct.imageSource ? selectedProduct.imageSource : { uri: selectedProduct.imageUrl }} 
+                  style={[styles.modalHeroImageAbsolute, { transform: [{ translateY: imageTranslateY }, { scale: imageScale }] }]} 
+                />
+                
+                <Animated.ScrollView 
+                  contentContainerStyle={{ paddingTop: 260 }} // Transparent space for the absolute image
+                  showsVerticalScrollIndicator={false}
+                  onScroll={Animated.event(
+                    [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+                    { useNativeDriver: true } // 60 FPS Native Animation
+                  )}
+                  scrollEventThrottle={16}
+                >
+                  {/* White card that slides over the image */}
+                  <View style={styles.modalScrollContent}>
+                    <View style={styles.modalBadge}>
+                      <Text style={styles.modalBadgeText}>{selectedProduct.badge}</Text>
+                    </View>
+                  
+                  <Text style={styles.modalTitle}>{selectedProduct.title}</Text>
+                  <Text style={styles.modalDesc}>{selectedProduct.desc}</Text>
+
+                  <Text style={styles.modalSectionTitle}>Fitur & Dampak Lingkungan</Text>
+                  <View style={styles.modalFeatureList}>
+                    {selectedProduct.features.map((feat: any, idx: number) => (
+                      <View key={idx} style={styles.modalFeatureItem}>
+                        <View style={styles.modalFeatureIcon}>
+                          <FontAwesome name={feat.icon} size={16} color={brand.primary} />
+                        </View>
+                        <Text style={styles.modalFeatureText}>{feat.text}</Text>
+                      </View>
+                    ))}
+                  </View>
+                  
+                  {/* Extra Padding for bottom button so nothing gets cut off */}
+                  <View style={{ height: 160 }} />
+                  </View>
+                </Animated.ScrollView>
+
+                {/* Fixed Bottom Footer */}
+                <View style={styles.modalFooter}>
+                  <View style={styles.modalPriceContainer}>
+                    <Text style={styles.modalPriceLabel}>Harga Total</Text>
+                    <Text style={styles.modalPrice}>{selectedProduct.price}</Text>
+                  </View>
+                  <TouchableOpacity style={styles.modalBuyButton} activeOpacity={0.8} onPress={handleAddToCart}>
+                    <FontAwesome name="shopping-cart" size={16} color={brand.white} />
+                    <Text style={styles.modalBuyButtonText}>Tambah Keranjang</Text>
+                  </TouchableOpacity>
+                </View>
+              </>
+            )}
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -227,7 +412,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 24,
     paddingTop: 16,
-    paddingBottom: 24, // Added more padding to let it breathe like the reference
+    paddingBottom: 24, 
   },
   headerProfile: {
     flexDirection: 'row',
@@ -235,7 +420,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   avatar: {
-    width: 48, // Slightly larger avatar
+    width: 48,
     height: 48,
     borderRadius: 24,
     backgroundColor: 'rgba(124, 58, 237, 0.1)',
@@ -245,7 +430,7 @@ const styles = StyleSheet.create({
   avatarText: {
     fontFamily: 'Lato_700Bold',
     fontSize: 16,
-    color: brand.primary, // Vibrant purple
+    color: brand.primary,
   },
   greeting: {
     fontFamily: 'Lato_400Regular',
@@ -254,14 +439,14 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   userName: {
-    fontFamily: 'Lato_700Bold', // Changed to sans-serif for a cleaner, modern look
+    fontFamily: 'Lato_700Bold',
     fontSize: 16, 
     color: brand.textPrimary,
   },
   headerActions: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12, // Adjusted gap to fit the new circular backgrounds
+    gap: 12, 
   },
   iconButton: {
     width: 44,
@@ -285,22 +470,70 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     backgroundColor: '#EF4444', 
     borderWidth: 1.5,
-    borderColor: brand.white, // Matches the new white background
+    borderColor: brand.white,
+  },
+
+  // Toast & Cart Badge Styles
+  cartBadge: {
+    position: 'absolute',
+    top: 6,
+    right: 6,
+    backgroundColor: '#EF4444',
+    minWidth: 18,
+    height: 18,
+    borderRadius: 9,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 4,
+    borderWidth: 1.5,
+    borderColor: brand.white,
+  },
+  cartBadgeText: {
+    color: brand.white,
+    fontSize: 10,
+    fontFamily: 'Lato_700Bold',
+  },
+  toastContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    zIndex: 999, // Ensure it's above everything
+  },
+  toastContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: brand.white,
+    paddingHorizontal: 20,
+    paddingVertical: 14,
+    borderRadius: 999,
+    gap: 12,
+    shadowColor: brand.primaryDark,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.15,
+    shadowRadius: 16,
+    elevation: 8,
+  },
+  toastText: {
+    fontFamily: 'Lato_700Bold',
+    fontSize: 14,
+    color: brand.textPrimary,
   },
 
   // Search Bar
   searchContainer: {
     paddingHorizontal: 24,
-    marginBottom: 24, // Consistent spacing before the carousel
+    marginBottom: 24, 
   },
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: brand.white,
-    borderRadius: 999, // Pill shape for a modern, friendly feel
+    borderRadius: 999, 
     paddingLeft: 20,
-    paddingRight: 8, // Creates an 8px even gap (top, bottom, right) for the 44px filter button
-    height: 60, // Increased height to give the 44x44 filter button room to breathe
+    paddingRight: 8,
+    height: 60,
     shadowColor: brand.primaryDark,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.04,
@@ -313,7 +546,7 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontFamily: 'Lato_400Regular',
-    fontSize: 15, // Increased slightly to balance with the 60px height and 22px icons
+    fontSize: 15,
     color: brand.textPrimary,
     height: '100%',
   },
@@ -321,10 +554,234 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: 'rgba(124, 58, 237, 0.08)', // Harmonious background matching the header icons
+    backgroundColor: 'rgba(124, 58, 237, 0.08)',
     justifyContent: 'center',
     alignItems: 'center',
     marginLeft: 8,
+  },
+
+  // Banner Carousel
+  bannerSlide: {
+    width: width,
+    paddingHorizontal: 24,
+  },
+  bannerCard: {
+    flexDirection: 'row',
+    height: 170, // Increased slightly for better proportions
+    borderRadius: 24,
+    overflow: 'hidden',
+    shadowColor: brand.primaryDark,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.05,
+    shadowRadius: 16,
+    elevation: 4,
+  },
+  bannerContent: {
+    flex: 1,
+    padding: 20,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+  },
+  badgeSmall: {
+    backgroundColor: 'rgba(124, 58, 237, 0.1)',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 999,
+    marginBottom: 8,
+  },
+  badgeTextSmall: {
+    fontFamily: 'Lato_700Bold',
+    fontSize: 9,
+    color: brand.primary,
+  },
+  bannerTitle: {
+    fontFamily: 'PlayfairDisplay_800ExtraBold',
+    fontSize: 18,
+    color: brand.textPrimary,
+    marginBottom: 16, // More breathing room before button
+  },
+  bannerButton: {
+    backgroundColor: brand.primary,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 999,
+  },
+  bannerButtonText: {
+    fontFamily: 'Lato_700Bold',
+    fontSize: 12,
+    color: brand.white,
+  },
+  bannerImage: {
+    width: 130, // Occupies right side beautifully
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  
+  // Pagination
+  paginationContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 8,
+    marginTop: 16,
+    marginBottom: 8, // Space before next section
+  },
+  dot: {
+    height: 6,
+    borderRadius: 3,
+  },
+  activeDot: {
+    width: 20,
+    backgroundColor: brand.primary,
+  },
+  inactiveDot: {
+    width: 6,
+    backgroundColor: 'rgba(124, 58, 237, 0.15)',
+  },
+
+  // Modal Styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    justifyContent: 'flex-end',
+  },
+  modalContainer: {
+    backgroundColor: '#000', // Black background makes image pop
+    height: height * 0.85,
+    borderTopLeftRadius: 32,
+    borderTopRightRadius: 32,
+    overflow: 'hidden',
+  },
+  modalCloseButton: {
+    position: 'absolute',
+    top: 16,
+    right: 16,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: brand.white,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  modalHeroImageAbsolute: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 300, // Provides extra height for bounce effect
+    resizeMode: 'cover',
+  },
+  modalScrollContent: {
+    backgroundColor: brand.white,
+    borderTopLeftRadius: 32,
+    borderTopRightRadius: 32,
+    padding: 24,
+    minHeight: height * 0.85, // Ensure white background fills screen
+  },
+  modalBadge: {
+    alignSelf: 'flex-start',
+    backgroundColor: 'rgba(124, 58, 237, 0.1)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 999,
+    marginBottom: 12,
+  },
+  modalBadgeText: {
+    fontFamily: 'Lato_700Bold',
+    fontSize: 10,
+    color: brand.primary,
+    textTransform: 'uppercase',
+  },
+  modalTitle: {
+    fontFamily: 'PlayfairDisplay_800ExtraBold',
+    fontSize: 26,
+    color: brand.textPrimary,
+    marginBottom: 12,
+    lineHeight: 32,
+  },
+  modalDesc: {
+    fontFamily: 'Lato_400Regular',
+    fontSize: 15,
+    color: brand.textSecondary,
+    lineHeight: 24,
+    marginBottom: 24,
+  },
+  modalSectionTitle: {
+    fontFamily: 'Lato_700Bold',
+    fontSize: 16,
+    color: brand.textPrimary,
+    marginBottom: 16,
+  },
+  modalFeatureList: {
+    gap: 16,
+  },
+  modalFeatureItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+  },
+  modalFeatureIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: 'rgba(124, 58, 237, 0.08)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalFeatureText: {
+    fontFamily: 'Lato_400Regular',
+    fontSize: 15,
+    color: brand.textPrimary,
+  },
+  modalFooter: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: brand.white,
+    paddingHorizontal: 24,
+    paddingVertical: 20,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(0,0,0,0.05)',
+    gap: 12, // Space between price and button
+  },
+  modalPriceContainer: {
+    flex: 1, // Let price take available space
+  },
+  modalPriceLabel: {
+    fontFamily: 'Lato_400Regular',
+    fontSize: 12,
+    color: brand.textSecondary,
+    marginBottom: 4,
+  },
+  modalPrice: {
+    fontFamily: 'Lato_700Bold', // Changed to Lato for clarity and readability
+    fontSize: 22, // Adjusted slightly to fit better
+    color: brand.primaryDark,
+  },
+  modalBuyButton: {
+    flex: 1.4, // Button takes more space to fit text
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center', // Center content in button
+    backgroundColor: brand.primary,
+    paddingVertical: 14,
+    borderRadius: 999,
+    gap: 8,
+  },
+  modalBuyButtonText: {
+    fontFamily: 'Lato_700Bold',
+    fontSize: 14, // Standardized safe size
+    color: brand.white,
   },
 
   // General Badges
@@ -344,81 +801,6 @@ const styles = StyleSheet.create({
     color: brand.primary,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
-  },
-
-  // Section 1: Hero Carousel
-  heroCarousel: {
-    paddingHorizontal: 24,
-    gap: 16,
-    paddingBottom: 24,
-  },
-  heroCard: {
-    width: width * 0.85,
-    backgroundColor: brand.white,
-    borderRadius: 24,
-    padding: 24,
-    shadowColor: brand.primaryDark,
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.05,
-    shadowRadius: 16,
-    elevation: 4,
-  },
-  heroTitle: {
-    fontFamily: 'PlayfairDisplay_800ExtraBold',
-    fontSize: 24,
-    color: brand.textPrimary,
-    marginBottom: 16,
-  },
-  heroDesc: {
-    fontFamily: 'Lato_400Regular',
-    fontSize: 14,
-    color: brand.textSecondary,
-    lineHeight: 22,
-    marginBottom: 16,
-  },
-  featureList: {
-    gap: 12,
-    marginBottom: 24,
-  },
-  featureItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
-  featureIcon: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: 'rgba(124, 58, 237, 0.08)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  featureText: {
-    fontFamily: 'Lato_400Regular',
-    fontSize: 13,
-    color: brand.textSecondary,
-  },
-  heroFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 16,
-  },
-  heroPrice: {
-    fontFamily: 'PlayfairDisplay_700Bold',
-    fontSize: 20,
-    color: brand.textPrimary,
-  },
-  buyButton: {
-    backgroundColor: brand.primary,
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderRadius: 999,
-  },
-  buyButtonText: {
-    fontFamily: 'Lato_700Bold',
-    fontSize: 14,
-    color: brand.white,
   },
 
   // Sections
