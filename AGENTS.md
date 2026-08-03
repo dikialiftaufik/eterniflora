@@ -157,28 +157,66 @@ lib/
 
 ---
 
-## UI Rules
+## UI/UX & Design Systems
 
-For any UI task:
+For any UI task, strictly adhere to modern design principles, maintaining a calming, aesthetic, and premium experience. Do not approximate; replicate provided designs exactly while applying the following rules.
 
-- Replicate the provided design exactly
-- Match layout, spacing, padding, font sizes, font hierarchy, colors, border radius, shadows, alignment, and proportions
+### 1. Laws of UX (Interaction & Mental Models)
+- **Aesthetic-Usability Effect**: Aesthetically pleasing design is perceived as more usable. Always prioritize premium polish.
+- **Fitts's Law**: Touch targets must be large and easily reachable (minimum 48px).
+- **Hick's Law**: Minimize user choices to reduce decision time. Keep interfaces simple.
+- **Jakob's Law**: Stick to established design patterns. Users prefer familiar experiences (e.g., standard tab bars, intuitive icons).
+- **Gestalt Principles (Proximity, Similarity, Common Region)**: Group related elements using generous whitespace and clear boundaries (like cards/containers).
+- **Von Restorff Effect**: Important elements (Primary CTAs) must visually stand out from the rest.
 
-Do not approximate. Do not simplify unless explicitly asked.
+### 2. Laws of UI (The Elegance Formula)
+- **Embrace Negative Space**: Generous whitespace prevents cluttered layouts and allows content to breathe.
+- **Clear Visual Hierarchy**: Use size, color, and contrast to establish a clear focal point.
+- **60-30-10 Color Rule**: 60% dominant (background), 30% secondary (cards/brand), 10% accent (CTAs/highlights).
+- **Consistency**: Ensure identical design elements (buttons, inputs, cards) remain consistent across all screens.
+- **Don't Make Users Think**: Strive for intuitive, predictable processes.
 
-### Visual Direction
+### 3. Typography Rules
+- **Limit Font Styles**: Stick to a maximum of 2 fonts to prevent visual chaos.
+- **Hierarchy & Contrast**: Guide the reader's eye using size, weight (Bold vs. Regular), and contrast (Large vs. Small, Dark vs. Light text).
+- **Alignment**: Left-aligned text is easiest to read on screens for body paragraphs. Center alignment is best for short headings or isolated UI text.
+- **Readability**: Ensure proper line length and generous line spacing. 
+- **EterniFlora Typeface Pairing**:
+  - **Primary Font (Heading/Display): `Playfair Display`**. Khusus untuk elemen besar (judul halaman, angka utama/poin, branding). Menghadirkan karakter visual yang vokal, elegan, dan kontras ekstrem.
+  - **Secondary Font (Body/UI Text): `Lato`**. Untuk teks panjang, label form, deskripsi, dan navigasi (fokus pada legibility). Sebagai penyeimbang netral berpendekatan humanist & self-healing yang hangat.
 
+### 4. UI Font Size & Layout Guidelines (Cheat Sheet)
+Always adhere to the following mobile typography scale to prevent tiny font mistakes:
+- **Heading 1 (Onboarding/Hero)**: 28px, Line Height 38px, Bold
+- **Heading 2 (Primary Title)**: 24px, Line Height 34px, Semi-bold/Bold
+- **Heading 3 (Secondary/Card Title)**: 20px, Line Height 30px, Medium
+- **Text 1 (Body/Headline)**: 16px, Line Height 26px, Regular
+- **Text 2 (Standard Body)**: 14px, Line Height 24px, Regular
+- **Text 3 (Details/Caption)**: 12px, Line Height 20px, Regular
+- **Text 4 (Tab Bar, Tags, Badges)**: 10px, Line Height 18px, Regular
+- **Navigation Bounds**: Standard Bottom Tab Bar / App Bar height is typically 56px.
+
+### 5. Visual Direction & Colors
 - **Primary color:** `#7C3AED` (Vivid Purple)
 - **Background:** `#F5F3F0` (Warm Off-White)
 - **Eco accent:** `#16A34A` (Forest Green)
 - **Dark hero sections:** `#1E0A3C` (Deep Purple)
 - **Dark eco wallet:** `#14532D` (Dark Green)
-- **Cards:** `border-radius: 20–24px`, subtle box shadow
-- **Buttons:** fully rounded pill shape (`border-radius: 999px`), minimum height 52px, purple gradient
-- **Typography:** 
-  - **Primary Font (Heading/Display): `Playfair Display`**. Khusus untuk elemen besar (judul halaman, angka utama/poin, branding). Menghadirkan karakter visual yang vokal, elegan, dan kontras ekstrem.
-  - **Secondary Font (Body/UI Text): `Lato`**. Untuk teks panjang, label form, deskripsi, dan navigasi (fokus pada legibility). Sebagai penyeimbang netral berpendekatan humanist & self-healing yang hangat, organik, dan menenangkan, sehingga menjaga cognitive load tetap rendah saat memindai layar mobile.
-- **Illustrations:** flat vector style, pastel purple/lavender palette
+- **Cards:** `border-radius: 20–24px`, subtle box shadow, soft-gradient backgrounds where appropriate.
+- **Buttons:** Fully rounded pill shape (`border-radius: 999px`), minimum height 52px, purple gradient.
+- **Illustrations:** Flat vector style, pastel purple/lavender palette.
+
+### 6. The 10 UI Design Mistakes to Avoid
+1. **Cluttered Layout**: Too much going on overwhelms users.
+2. **Poor Color Contrast**: Hurts accessibility and frustrates reading.
+3. **Tiny Font Size**: Small text is difficult to read on mobile.
+4. **Too Many Fonts**: Creates visual inconsistency.
+5. **Inconsistent Buttons**: Breaks the flow and confuses users.
+6. **Weak Visual Hierarchy**: Important elements get lost.
+7. **No White Space**: Makes content hard to scan and understand.
+8. **Poor Navigation**: Frustrates users and makes them leave.
+9. **Low-Quality Icons**: Makes the app look unprofessional.
+10. **Ignoring Mobile Users**: Always optimize for touch targets and mobile ergonomics.
 
 ---
 
