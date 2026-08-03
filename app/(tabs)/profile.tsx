@@ -3,8 +3,10 @@ import { brand } from '@/constants/Colors';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useEcoStore } from '@/store/useEcoStore';
 
 export default function ProfileScreen() {
+  const { balance, totalBottles } = useEcoStore();
   return (
     <View className="flex-1 bg-brand-background">
       {/* SOFT BACKGROUND GRADIENT */}
@@ -14,7 +16,7 @@ export default function ProfileScreen() {
         end={{ x: 0, y: 0.4 }}
       />
       <SafeAreaView className="flex-1" edges={['top']}>
-        <ScrollView contentContainerClassName="p-6">
+        <ScrollView contentContainerClassName="p-6 pb-32" showsVerticalScrollIndicator={false}>
         
         {/* App Bar (56px Height per UI Rules) */}
         <View className="h-[56px] flex-row items-center justify-between mb-8 mt-2">
@@ -92,7 +94,9 @@ export default function ProfileScreen() {
 
             {/* Main Points Area */}
             <View className="flex-row items-center mb-10">
-              <Text className="font-playfair text-[48px] leading-[56px] mr-3" style={{ color: brand.white }}>2,450</Text>
+              <Text className="font-playfair text-[48px] leading-[56px] mr-3" style={{ color: brand.white }}>
+                {balance.toLocaleString('id-ID')}
+              </Text>
               <Text className="font-lato text-[16px] leading-[26px]" style={{ color: 'rgba(255, 255, 255, 0.8)', marginTop: 12 }}>Eco Points</Text>
             </View>
 
@@ -106,7 +110,7 @@ export default function ProfileScreen() {
                   Setoran Botol
                 </Text>
                 <Text className="font-latoBold text-[16px] leading-[26px]" style={{ color: brand.white }}>
-                  128 Botol PET
+                  {totalBottles} Botol PET
                 </Text>
               </View>
               <View className="flex-1 items-end">
