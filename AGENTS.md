@@ -155,6 +155,32 @@ lib/
   cn.ts
 ```
 
+### Bouquet Studio Customizer (Best Practices)
+
+The "Proses Mendesain Bouquet Anda" uses a progressive 5-step stepper: 
+1. Bunga (4 opsi), 2. Warna (4 opsi), 3. Hiasan (3 opsi), 4. Pita (3 opsi), 5. Pembungkus (3 opsi) with a live preview.
+
+**Anti-Pattern:** Do NOT use "flat asset per combination". Generating an image for every possible combination (4x4x3x3x3 = 432 images) is a highly unscalable anti-pattern for e-commerce customizers.
+
+**Solution: Layered Compositing**
+Break down the bouquet into independent layers stacked at runtime (e.g., using `react-native-svg` or `@shopify/react-native-skia`):
+- Layer 5 (top)    → Pita (3 assets)
+- Layer 4          → Hiasan (3 assets)
+- Layer 3          → Bunga (4 assets, grayscale/shape only)
+- Layer 2          → Warna (Dynamic overlay/tint)
+- Layer 1 (bottom) → Pembungkus (3 assets)
+**Total Assets:** 17 assets instead of 432.
+
+**Key Technical Rules:**
+1. **Dynamic Coloring & Asset Separation:** Do NOT generate and save composited assets per color for the engine. However, separate visual assets into two types:
+   - **Grayscale/Base Assets:** Used under the hood as the neutral canvas for dynamic runtime coloring (via SVG fill/ColorMatrix) during the layered compositing process.
+   - **Colored Assets (Display Only):** Used strictly for presenting options to the user in the UI (e.g., in selection cards) to maintain high visual aesthetics and a premium feel without relying on raw runtime filters for the catalog view.
+2. **Systematic Alignment:** All layers must share a consistent anchor point, scale, and lighting reference designed on a single master canvas to ensure stacked layers do not look like disjointed stickers.
+3. **Optimizations:**
+   - **Rules Engine:** Restrict invalid or visually unappealing combinations in subsequent steps based on previous selections.
+   - **Composite Caching:** Save the final rendered preview as a single cached image for cart/checkout thumbnails instead of re-rendering layers.
+   - **Lazy Loading:** Only load the assets required for the active step.
+
 ---
 
 ## UI/UX & Design Systems
