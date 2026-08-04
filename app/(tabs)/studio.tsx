@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Image } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Image, Animated } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useRouter } from 'expo-router';
@@ -13,9 +13,9 @@ const GAP = 14;
 
 // Mock Data for Inspiration Gallery
 const INSPIRATIONS = [
-  { id: '1', title: 'Lavender Calm', desc: 'Tenang & Menenangkan', img: 'https://images.unsplash.com/photo-1591886960571-74d43a9d4166?q=80&w=400&auto=format&fit=crop', badge: 'Populer', icon: 'heart' },
-  { id: '2', title: 'Sweet Comfort', desc: 'Lembut & Hangat', img: 'https://images.unsplash.com/photo-1563241527-3004b7be0fae?q=80&w=400&auto=format&fit=crop', icon: 'heart-o' },
-  { id: '3', title: 'Sunny Day', desc: 'Ceria & Optimis', img: 'https://images.unsplash.com/photo-1591886960571-74d43a9d4166?q=80&w=400&auto=format&fit=crop', icon: 'heart-o' },
+  { id: '1', title: 'Lavender Calm', desc: 'Tenang & Menenangkan', img: 'https://images.unsplash.com/photo-1592659762303-90081d34b277?q=80&w=400&auto=format&fit=crop', badge: 'Populer', icon: 'heart' },
+  { id: '2', title: 'Sweet Comfort', desc: 'Lembut & Hangat', img: 'https://images.unsplash.com/photo-1525310072745-f49212b5ac6d?q=80&w=400&auto=format&fit=crop', icon: 'heart-o' },
+  { id: '3', title: 'Sunny Day', desc: 'Ceria & Optimis', img: 'https://images.unsplash.com/photo-1554522965-da255d65c3b1?q=80&w=400&auto=format&fit=crop', icon: 'heart-o' },
 ];
 
 export default function BouquetStudioLandingScreen() {
@@ -41,7 +41,7 @@ export default function BouquetStudioLandingScreen() {
           <View style={{ width: 44 }} />
         </View>
 
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 60 }}>
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
 
           {/* ── HERO BANNER ── */}
           <View style={s.bannerContainer}>
@@ -65,7 +65,7 @@ export default function BouquetStudioLandingScreen() {
 
           {/* ── START DESIGN SECTION ── */}
           <View style={s.sectionHeader}>
-            <Text style={s.sectionTitle}>Mulai Mendesain Bouquet Anda</Text>
+            <Text style={s.sectionTitle}>Proses Mendesain Bouquet Anda</Text>
           </View>
 
           <TouchableOpacity
@@ -82,22 +82,23 @@ export default function BouquetStudioLandingScreen() {
               <StepIcon icon="sticky-note-o" label="Bungkus" sub="Pilih kertas pembungkus" />
             </View>
 
-            {/* Inner Impact Card */}
-            <View style={s.innerImpactCard}>
-              <View style={s.innerImpactIconCircle}>
-                <FontAwesome name="globe" size={24} color="#60A5FA" />
-                <FontAwesome name="star" size={10} color="#FBBF24" style={{ position: 'absolute', top: -4, left: -4 }} />
+            {/* Inner CTA Card (Slim & Gradient) */}
+            <LinearGradient
+              colors={['#A78BFA', '#8B5CF6']}
+              start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
+              style={s.innerCtaCard}
+            >
+              {/* Center Text */}
+              <View style={s.innerCtaTextWrap}>
+                <Text style={s.innerCtaTitle} numberOfLines={1} adjustsFontSizeToFit>Mulai Mendesain Bouquet Anda</Text>
+                <Text style={s.innerCtaDesc}>Wujudkan perasaan dan momen spesial dalam rangkaian bunga.</Text>
               </View>
-              <View style={s.innerImpactTextWrap}>
-                <Text style={s.innerImpactTitle}>Setiap desain berdampak positif</Text>
-                <Text style={s.innerImpactDesc}>Setiap pembelian membantu mengurangi limbah plastik dan mendukung bumi yang lebih sehat. 🌱</Text>
+
+              {/* Right Arrow */}
+              <View style={s.innerCtaArrowCircle}>
+                <FontAwesome name="arrow-right" size={14} color={brand.primary} />
               </View>
-              <View style={s.innerImpactSparkles}>
-                <FontAwesome name="star" size={12} color="#FBBF24" style={{ position: 'absolute', top: 10, right: 20 }} />
-                <FontAwesome name="star" size={8} color="#FBBF24" style={{ position: 'absolute', top: 30, right: 10 }} />
-                <FontAwesome name="star" size={14} color="#FBBF24" style={{ position: 'absolute', bottom: 10, right: 16 }} />
-              </View>
-            </View>
+            </LinearGradient>
           </TouchableOpacity>
 
           {/* ── INSPIRATION GALLERY ── */}
@@ -116,43 +117,9 @@ export default function BouquetStudioLandingScreen() {
             decelerationRate="fast"
           >
             {INSPIRATIONS.map(item => (
-              <View key={item.id} style={s.inspireCard}>
-                <View style={s.inspireImgWrap}>
-                  <Image source={{ uri: item.img }} style={s.inspireImg} />
-                  {item.badge && (
-                    <View style={s.inspireBadge}>
-                      <Text style={s.inspireBadgeText}>{item.badge}</Text>
-                    </View>
-                  )}
-                </View>
-                <View style={s.inspireBody}>
-                  <View style={s.inspireTitleRow}>
-                    <Text style={s.inspireTitle} numberOfLines={1}>{item.title}</Text>
-                    <FontAwesome name={item.icon as any} size={14} color={brand.primary} />
-                  </View>
-                  <Text style={s.inspireDesc}>{item.desc}</Text>
-                </View>
-              </View>
+              <InspirationCard key={item.id} item={item} />
             ))}
           </ScrollView>
-
-          {/* ── IMPACT FOOTER BANNER ── */}
-          <LinearGradient
-            colors={[brand.primaryLight, brand.primary]}
-            start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
-            style={s.impactBanner}
-          >
-            <View style={s.impactIconWrap}>
-              <FontAwesome name="leaf" size={20} color={brand.white} />
-            </View>
-            <View style={s.impactTextWrap}>
-              <Text style={s.impactTitle}>Desain dengan dampak positif</Text>
-              <Text style={s.impactDesc}>Setiap pembelian membantu mengurangi limbah plastik dan mendukung bumi yang lebih sehat. 🌱</Text>
-            </View>
-            <TouchableOpacity style={s.impactBtn} activeOpacity={0.8}>
-              <Text style={s.impactBtnText}>Pelajari Lebih Lanjut <FontAwesome name="angle-right" size={12} /></Text>
-            </TouchableOpacity>
-          </LinearGradient>
 
         </ScrollView>
       </SafeAreaView>
@@ -167,6 +134,60 @@ export default function BouquetStudioLandingScreen() {
 }
 
 /* ── SUBCOMPONENTS ── */
+function InspirationCard({ item }: { item: typeof INSPIRATIONS[0] }) {
+  const [liked, setLiked] = useState(item.icon === 'heart');
+  const scale = useRef(new Animated.Value(1)).current;
+  const heartScale = useRef(new Animated.Value(1)).current;
+
+  const handlePressIn = () => {
+    Animated.spring(scale, { toValue: 0.95, useNativeDriver: true }).start();
+  };
+  const handlePressOut = () => {
+    Animated.spring(scale, { toValue: 1, useNativeDriver: true }).start();
+  };
+
+  const toggleLike = () => {
+    const isNowLiked = !liked;
+    setLiked(isNowLiked);
+    Animated.sequence([
+      Animated.timing(heartScale, { toValue: 1.4, duration: 100, useNativeDriver: true }),
+      Animated.spring(heartScale, { toValue: 1, friction: 3, useNativeDriver: true })
+    ]).start();
+  };
+
+  return (
+    <Animated.View style={{ transform: [{ scale }] }}>
+      <TouchableOpacity
+        style={s.inspireCard}
+        activeOpacity={1}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+        delayPressIn={0}
+      >
+        <View style={s.inspireImgWrap}>
+          <Image source={{ uri: item.img }} style={s.inspireImg} />
+          {item.badge && (
+            <View style={s.inspireBadge}>
+              <Text style={s.inspireBadgeText}>{item.badge}</Text>
+            </View>
+          )}
+        </View>
+        <View style={s.inspireBody}>
+          <View style={s.inspireTitleRow}>
+            <Text style={s.inspireTitle} numberOfLines={1}>{item.title}</Text>
+            <TouchableOpacity onPress={toggleLike} hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}>
+              <Animated.View style={{ transform: [{ scale: heartScale }] }}>
+                <FontAwesome name={liked ? 'heart' : 'heart-o'} size={15} color={liked ? '#EF4444' : brand.textSecondary} />
+              </Animated.View>
+            </TouchableOpacity>
+          </View>
+          <Text style={s.inspireDesc}>{item.desc}</Text>
+        </View>
+      </TouchableOpacity>
+    </Animated.View>
+  );
+}
+
 function StepIcon({ icon, label, sub }: { icon: string, label: string, sub: string }) {
   return (
     <View style={s.stepWrap}>
@@ -220,14 +241,14 @@ const s = StyleSheet.create({
   stepLabel: { fontFamily: 'Lato_700Bold', fontSize: 10, color: brand.textPrimary, marginBottom: 4, textAlign: 'center' },
   stepSub: { fontFamily: 'Lato_400Regular', fontSize: 9, color: brand.textSecondary, textAlign: 'center', lineHeight: 12 },
 
-  innerImpactCard: {
-    backgroundColor: '#F8F6FC', borderRadius: 16, padding: 16, flexDirection: 'row', alignItems: 'center', marginTop: 24, position: 'relative', overflow: 'hidden'
+  innerCtaCard: {
+    borderRadius: 16, padding: 16, flexDirection: 'row', alignItems: 'center', marginTop: 32, position: 'relative', overflow: 'hidden',
+    shadowColor: brand.primary, shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.2, shadowRadius: 12, elevation: 5
   },
-  innerImpactIconCircle: { width: 48, height: 48, borderRadius: 24, backgroundColor: brand.white, justifyContent: 'center', alignItems: 'center', marginRight: 16, shadowColor: 'rgba(0,0,0,0.1)', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 1, shadowRadius: 4, elevation: 2 },
-  innerImpactTextWrap: { flex: 1, zIndex: 2 },
-  innerImpactTitle: { fontFamily: 'Lato_700Bold', fontSize: 13, color: brand.primaryDark, marginBottom: 4 },
-  innerImpactDesc: { fontFamily: 'Lato_400Regular', fontSize: 11, color: brand.textSecondary, lineHeight: 16, paddingRight: 32 },
-  innerImpactSparkles: { position: 'absolute', top: 0, right: 0, bottom: 0, width: 40, zIndex: 1 },
+  innerCtaTextWrap: { flex: 1, zIndex: 2 },
+  innerCtaTitle: { fontFamily: 'PlayfairDisplay_700Bold', fontSize: 16, color: brand.white, marginBottom: 4 },
+  innerCtaDesc: { fontFamily: 'Lato_400Regular', fontSize: 11, color: 'rgba(255,255,255,0.9)', lineHeight: 16, paddingRight: 8 },
+  innerCtaArrowCircle: { width: 32, height: 32, borderRadius: 16, backgroundColor: brand.white, justifyContent: 'center', alignItems: 'center', marginLeft: 8, zIndex: 2 },
 
   // Inspiration Gallery
   sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: HP, marginBottom: 14 },
@@ -247,16 +268,4 @@ const s = StyleSheet.create({
   inspireTitleRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 },
   inspireTitle: { fontFamily: 'Lato_700Bold', fontSize: 14, color: brand.textPrimary, flex: 1, marginRight: 8 },
   inspireDesc: { fontFamily: 'Lato_400Regular', fontSize: 11, color: brand.textSecondary },
-
-  // Footer Banner
-  impactBanner: {
-    marginHorizontal: HP, borderRadius: 24, padding: 20, marginTop: 12,
-    flexDirection: 'column', alignItems: 'flex-start'
-  },
-  impactIconWrap: { width: 44, height: 44, borderRadius: 22, backgroundColor: 'rgba(255,255,255,0.2)', justifyContent: 'center', alignItems: 'center', marginBottom: 16 },
-  impactTextWrap: { marginBottom: 16 },
-  impactTitle: { fontFamily: 'Lato_700Bold', fontSize: 16, color: brand.white, marginBottom: 4 },
-  impactDesc: { fontFamily: 'Lato_400Regular', fontSize: 13, color: 'rgba(255,255,255,0.9)', lineHeight: 20 },
-  impactBtn: { alignSelf: 'flex-start', backgroundColor: 'rgba(255,255,255,0.15)', paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20 },
-  impactBtnText: { fontFamily: 'Lato_700Bold', fontSize: 12, color: brand.white },
 });
