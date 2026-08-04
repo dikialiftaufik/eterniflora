@@ -14,9 +14,10 @@ interface Props {
   width?: number | string;
   layout?: 'grid' | 'list';
   imageResizeMode?: 'cover' | 'contain';
+  showRadioButton?: boolean;
 }
 
-export default function BouquetCustomizerCard({ title, subtitle, imageUrl, imageSource, colorHex, isSelected, onPress, width = '100%', layout = 'grid', imageResizeMode = 'cover' }: Props) {
+export default function BouquetCustomizerCard({ title, subtitle, imageUrl, imageSource, colorHex, isSelected, onPress, width = '100%', layout = 'grid', imageResizeMode = 'cover', showRadioButton = false }: Props) {
   const isList = layout === 'list';
 
   return (
@@ -30,14 +31,14 @@ export default function BouquetCustomizerCard({ title, subtitle, imageUrl, image
         isSelected && styles.cardSelected,
       ]}
     >
-      {/* Checkmark Badge */}
-      {isSelected && (
+      {/* Checkmark Badge (Original) */}
+      {!showRadioButton && isSelected && (
         <View style={styles.checkBadge}>
           <FontAwesome name="check" size={10} color={brand.white} />
         </View>
       )}
 
-      {/* Premium Image Header */}
+      {/* List Layout: Left side has Image or Color */}
       {(imageUrl || imageSource) && (
         <View style={[styles.imageContainer, isList && styles.imageContainerList]}>
           <Image source={imageSource ? imageSource : { uri: imageUrl }} style={[styles.image, { resizeMode: imageResizeMode }]} />
@@ -54,15 +55,24 @@ export default function BouquetCustomizerCard({ title, subtitle, imageUrl, image
       
       {/* Text Info */}
       <View style={[styles.textContainer, isList && styles.textContainerList, !imageUrl && !imageSource && !colorHex && !isList && { paddingTop: 16 }]}>
-        <Text style={[styles.title, isList && styles.titleList, isSelected && styles.titleSelected]} numberOfLines={1}>
+        <Text style={[styles.title, isList && styles.titleList, isSelected && styles.titleSelected]} numberOfLines={2}>
           {title}
         </Text>
         {subtitle && (
-          <Text style={[styles.subtitle, isList && styles.subtitleList, isSelected && styles.subtitleSelected]} numberOfLines={1}>
+          <Text style={[styles.subtitle, isList && styles.subtitleList, isSelected && styles.subtitleSelected]} numberOfLines={2}>
             {subtitle}
           </Text>
         )}
       </View>
+
+      {/* Radio Button (New) */}
+      {showRadioButton && (
+        <View style={[styles.radioContainer, isList && styles.radioContainerList]}>
+          <View style={[styles.radioButton, isSelected && styles.radioButtonSelected]}>
+            {isSelected && <View style={styles.radioButtonInner} />}
+          </View>
+        </View>
+      )}
     </TouchableOpacity>
   );
 }
@@ -113,8 +123,8 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   imageContainerList: {
-    width: 48,
-    height: 48,
+    width: 72,
+    height: 72,
     borderRadius: 8,
   },
   image: {
@@ -152,6 +162,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'flex-start',
     padding: 0,
+    marginLeft: 16,
   },
   title: {
     fontFamily: 'Lato_700Bold',
@@ -180,4 +191,31 @@ const styles = StyleSheet.create({
   subtitleSelected: {
     color: brand.textSecondary,
   },
+  radioContainer: {
+    alignItems: 'center',
+    paddingBottom: 16,
+  },
+  radioContainerList: {
+    paddingBottom: 0,
+    paddingLeft: 12,
+  },
+  radioButton: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 1.5,
+    borderColor: brand.primaryLight,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: brand.white,
+  },
+  radioButtonSelected: {
+    borderColor: brand.primary,
+  },
+  radioButtonInner: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: brand.primary,
+  }
 });

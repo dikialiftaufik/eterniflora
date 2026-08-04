@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal, Image } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal, Image, useWindowDimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -30,7 +30,7 @@ const SummaryRow = ({ label, value, colorHex, icon }: { label: string, value: st
 export default function StudioCustomizer({ visible, onClose }: Props) {
   const { bouquetConfig, setBouquetConfig } = useEcoStore();
   const [currentStep, setCurrentStep] = useState(1);
-  const [openDropdown, setOpenDropdown] = useState<'wrapper' | 'ribbon' | null>(null);
+  const { width } = useWindowDimensions();
 
   const basePrice = 150000;
   const priceString = `Rp${basePrice.toLocaleString('id-ID')}`;
@@ -109,51 +109,32 @@ export default function StudioCustomizer({ visible, onClose }: Props) {
           </View>
         );
       case 4: {
-        const selectedWrapper = wrapperOptions.find(w => w.id === bouquetConfig.wrappingStyle);
-        const selectedRibbon = ribbonOptions.find(r => r.id === bouquetConfig.ribbonColor);
+        const ribbonCardWidth = (width - 48 - 24) / 3; // 48 padding, 24 gaps
 
         return (
           <View style={{ gap: 24 }}>
-            {/* WRAPPERS DROPDOWN */}
+            {/* WRAPPERS SECTION */}
             <View>
-              <Text style={[styles.subCategoryTitle, { textAlign: 'left', marginBottom: 8 }]}>Kertas Pembungkus</Text>
-              <TouchableOpacity 
-                style={styles.dropdownHeader} 
-                onPress={() => setOpenDropdown(openDropdown === 'wrapper' ? null : 'wrapper')}
-                activeOpacity={0.8}
-              >
-                <Text style={styles.dropdownHeaderText}>{selectedWrapper?.name || 'Pilih Kertas Pembungkus'}</Text>
-                <FontAwesome name={openDropdown === 'wrapper' ? "chevron-up" : "chevron-down"} size={16} color={brand.textSecondary} />
-              </TouchableOpacity>
-
-              {openDropdown === 'wrapper' && (
-                <View style={styles.dropdownContent}>
-                  {wrapperOptions.map(wrapper => (
-                    <BouquetCustomizerCard key={wrapper.id} title={wrapper.name} subtitle={wrapper.subtitle} imageUrl={wrapper.imageUrl} isSelected={bouquetConfig.wrappingStyle === wrapper.id} onPress={() => { setBouquetConfig({ wrappingStyle: wrapper.id }); setOpenDropdown(null); }} width="100%" layout="list" />
-                  ))}
-                </View>
-              )}
+              <View style={styles.sectionHeaderRef}>
+                <Text style={styles.sectionTitleRef}>Kertas Pembungkus</Text>
+              </View>
+              <View style={styles.listContainer}>
+                {wrapperOptions.map(wrapper => (
+                  <BouquetCustomizerCard key={wrapper.id} title={wrapper.name} subtitle={wrapper.subtitle} imageUrl={wrapper.imageUrl} imageSource={wrapper.imageSource} isSelected={bouquetConfig.wrappingStyle === wrapper.id} onPress={() => setBouquetConfig({ wrappingStyle: wrapper.id })} width="100%" layout="list" showRadioButton />
+                ))}
+              </View>
             </View>
 
-            {/* RIBBONS DROPDOWN */}
+            {/* RIBBONS SECTION */}
             <View>
-              <Text style={[styles.subCategoryTitle, { textAlign: 'left', marginBottom: 8 }]}>Warna Pita Pengikat</Text>
-              <TouchableOpacity 
-                style={styles.dropdownHeader} 
-                onPress={() => setOpenDropdown(openDropdown === 'ribbon' ? null : 'ribbon')}
-                activeOpacity={0.8}
-              >
-                <Text style={styles.dropdownHeaderText}>{selectedRibbon?.name || 'Pilih Warna Pita'}</Text>
-                <FontAwesome name={openDropdown === 'ribbon' ? "chevron-up" : "chevron-down"} size={16} color={brand.textSecondary} />
-              </TouchableOpacity>
-
-              {openDropdown === 'ribbon' && (
-                <View style={styles.dropdownContent}>
-                  {ribbonOptions.map(ribbon => (
-                    <BouquetCustomizerCard key={ribbon.id} title={ribbon.name} subtitle={ribbon.subtitle} colorHex={ribbon.hexCode} isSelected={bouquetConfig.ribbonColor === ribbon.id} onPress={() => { setBouquetConfig({ ribbonColor: ribbon.id }); setOpenDropdown(null); }} width="100%" layout="list" />
-                  ))}
-                </View>
-              )}
+              <View style={styles.sectionHeaderRef}>
+                <Text style={styles.sectionTitleRef}>Warna Pita Pengikat</Text>
+              </View>
+              <View style={styles.gridContainer}>
+                {ribbonOptions.map(ribbon => (
+                  <BouquetCustomizerCard key={ribbon.id} title={ribbon.name} subtitle={ribbon.subtitle} colorHex={ribbon.hexCode} imageUrl={ribbon.imageUrl} imageSource={ribbon.imageSource} isSelected={bouquetConfig.ribbonColor === ribbon.id} onPress={() => setBouquetConfig({ ribbonColor: ribbon.id })} width={ribbonCardWidth} layout="grid" showRadioButton imageResizeMode="contain" />
+                ))}
+              </View>
             </View>
           </View>
         );
@@ -309,26 +290,16 @@ const styles = StyleSheet.create({
   listContainer: { flexDirection: 'column', gap: 0 },
   centeredRow: { flexDirection: 'row', justifyContent: 'center' },
   
-  // DROPDOWN STYLES
-  dropdownHeader: {
+  // SECTION STYLES FOR STEP 4
+  sectionHeaderRef: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: brand.white,
-    borderWidth: 1,
-    borderColor: 'rgba(0,0,0,0.05)',
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    borderRadius: 12,
+    marginBottom: 16,
   },
-  dropdownHeaderText: {
-    fontFamily: 'Lato_700Bold',
-    fontSize: 15,
-    color: brand.textPrimary,
-  },
-  dropdownContent: {
-    marginTop: 12,
-    gap: 12,
+  sectionTitleRef: {
+    fontFamily: 'PlayfairDisplay_700Bold',
+    fontSize: 20,
+    color: brand.primaryDark,
   },
   
   // PREVIEW SCREEN STYLES

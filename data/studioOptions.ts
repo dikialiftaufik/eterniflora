@@ -48,13 +48,14 @@ export interface WrapperOption {
   id: WrappingStyle;
   name: string;
   subtitle: string;
-  imageUrl: string;
+  imageSource?: any;
+  imageUrl?: string;
 }
 
 export const wrapperOptions: WrapperOption[] = [
-  { id: 'goni-lavender', name: 'Kain Goni Premium', subtitle: '& Kertas Lavender', imageUrl: 'https://images.unsplash.com/photo-1584589167171-541ce45f1eea?q=80&w=200&auto=format&fit=crop' },
-  { id: 'craft-coklat', name: 'Kertas Craft Coklat', subtitle: 'Klasik (Retro)', imageUrl: 'https://images.unsplash.com/photo-1606780074211-125027bfeb59?q=80&w=200&auto=format&fit=crop' },
-  { id: 'putih-salju', name: 'Pembungkus Transparan', subtitle: 'Putih Salju', imageUrl: 'https://images.unsplash.com/photo-1520121401995-928dc50d4e27?q=80&w=200&auto=format&fit=crop' },
+  { id: 'craft-coklat', name: 'Kertas Craft Coklat', subtitle: 'Klasik (Retro)', imageSource: images.craft },
+  { id: 'goni-lavender', name: 'Kain Goni Premium', subtitle: 'Kertas Lavender', imageSource: images.goni },
+  { id: 'putih-salju', name: 'Pembungkus Transparan', subtitle: 'Putih Salju', imageSource: images.transparan },
 ];
 
 export interface RibbonOption {
@@ -62,12 +63,14 @@ export interface RibbonOption {
   name: string;
   subtitle: string;
   hexCode: string;
+  imageSource?: any;
+  imageUrl?: string;
 }
 
 export const ribbonOptions: RibbonOption[] = [
-  { id: 'ungu-royal', name: 'Pita Satin', subtitle: 'Ungu Royal', hexCode: '#5B21B6' },
-  { id: 'hijau-sage', name: 'Pita Beludru', subtitle: 'Hijau Sage', hexCode: '#A3B18A' },
-  { id: 'emas-champagne', name: 'Pita Sutera', subtitle: 'Emas Champagne', hexCode: '#F4E285' },
+  { id: 'ungu-royal', name: 'Pita Satin', subtitle: 'Ungu Royal', hexCode: '#5B21B6', imageSource: images.pitaUngu },
+  { id: 'hijau-sage', name: 'Pita Beludru', subtitle: 'Hijau Sage', hexCode: '#A3B18A', imageSource: images.pitaSage },
+  { id: 'emas-champagne', name: 'Pita Sutera', subtitle: 'Emas Champagne', hexCode: '#F4E285', imageSource: images.pitaChampagne },
 ];
 
 // Helper to get preview image based on flower + color

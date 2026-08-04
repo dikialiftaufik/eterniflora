@@ -24,6 +24,20 @@ const displayFern = require('@/assets/images/display-fern.png') as number;
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const displaySilver = require('@/assets/images/display-silver.png') as number;
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const goni = require('@/assets/images/goni.png') as number;
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const craft = require('@/assets/images/craft.png') as number;
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const transparan = require('@/assets/images/transparan.png') as number;
+
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const pitaSage = require('@/assets/images/pita-sage.png') as number;
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const pitaUngu = require('@/assets/images/pita-ungu.png') as number;
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const pitaChampagne = require('@/assets/images/pita-champagne.png') as number;
+
 export const images = {
   icon,
   splashIcon,
@@ -34,4 +48,10 @@ export const images = {
   displayEucalyptus,
   displayFern,
   displaySilver,
+  goni,
+  craft,
+  transparan,
+  pitaSage,
+  pitaUngu,
+  pitaChampagne,
 };
