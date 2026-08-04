@@ -93,7 +93,7 @@ export default function RegisterScreen() {
               />
               <Text style={styles.tagline}>Mulai Perjalanan Anda</Text>
               <Text style={styles.subtitle}>
-                Daftar untuk merakit buket aromaterapi dan selamatkan lingkungan 🌿
+                Daftar untuk merakit buket aromaterapi dan selamatkan lingkungan
               </Text>
             </View>
 

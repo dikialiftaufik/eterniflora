@@ -35,14 +35,14 @@ const initialBouquetConfig: BouquetConfig = {
 };
 
 export const useEcoStore = create<EcoStoreState>((set) => ({
-  balance: 0, // Starts at 0 as requested
-  totalBottles: 0,
+  balance: 14500,
+  totalBottles: 24,
   addDeposit: (bottles, points) =>
     set((state) => ({
       balance: state.balance + points,
       totalBottles: state.totalBottles + bottles,
     })),
-  reset: () => set({ balance: 0, totalBottles: 0 }),
+  reset: () => set({ balance: 14500, totalBottles: 24 }),
   
   bouquetConfig: initialBouquetConfig,
   setBouquetConfig: (config) => 

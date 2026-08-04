@@ -45,7 +45,6 @@ export default function StudioCustomizer({ visible, onClose }: Props) {
   const handleNext = () => {
     if (currentStep < TOTAL_STEPS) {
       setCurrentStep(prev => prev + 1);
-      setCurrentStep(s => s + 1);
     } else {
       // Trigger Success Micro-animation
       setShowSuccessOverlay(true);
@@ -56,15 +55,17 @@ export default function StudioCustomizer({ visible, onClose }: Props) {
       ]).start();
 
       setTimeout(() => {
-        // Fade out
-        Animated.timing(opacityAnim, { toValue: 0, duration: 400, useNativeDriver: true }).start(() => {
+        // Trigger modal native slide down animation
+        onClose();
+        
+        // Reset state after modal has closed (500ms is enough for native slide)
+        setTimeout(() => {
           setShowSuccessOverlay(false);
-          onClose();
-          // reset for next open
           setCurrentStep(1);
           scaleAnim.setValue(0);
           floatAnim.setValue(20);
-        });
+          opacityAnim.setValue(0);
+        }, 500);
       }, 2000);
     }
   };

@@ -41,6 +41,24 @@ const pitaChampagne = require('@/assets/images/pita-champagne.png') as number;
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const preview = require('@/assets/images/preview.png') as number;
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const diyKit = require('@/assets/images/diy-kit.png') as number;
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const edukasiUpcycling = require('@/assets/images/edukasi-upcycling.jpeg') as number;
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const mangrovePesisir = require('@/assets/images/mangrove-pesisir.jpg') as number;
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const penanamanPohon = require('@/assets/images/penanaman-pohon.jpg') as number;
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const riverCleanup = require('@/assets/images/river-cleanup.jpeg') as number;
+
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const lavender = require('@/assets/images/lavender.png') as number;
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const sweetComfort = require('@/assets/images/sweet-comfort.png') as number;
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const sunnyDay = require('@/assets/images/sunny-day.png') as number;
+
 export const images = {
   icon,
   splashIcon,
@@ -58,4 +76,12 @@ export const images = {
   pitaUngu,
   pitaChampagne,
   preview,
+  diyKit,
+  edukasiUpcycling,
+  mangrovePesisir,
+  penanamanPohon,
+  riverCleanup,
+  lavender,
+  sweetComfort,
+  sunnyDay,
 };

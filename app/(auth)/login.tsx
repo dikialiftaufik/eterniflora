@@ -82,7 +82,7 @@ export default function LoginScreen() {
               />
               <Text style={styles.tagline}>Healing the Earth, Healing Yourself</Text>
               <Text style={styles.subtitle}>
-                Masuk untuk mulai merakit buket aromaterapi{'\n'}dan berkontribusi untuk lingkungan 🌿
+                Masuk untuk mulai merakit buket aromaterapi{'\n'}dan berkontribusi untuk lingkungan
               </Text>
             </View>
 

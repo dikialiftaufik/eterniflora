@@ -5,6 +5,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { brand } from '@/constants/Colors';
+import { images } from '@/constants/images';
 import StudioCustomizer from '@/components/StudioCustomizer';
 
 const { width } = Dimensions.get('window');
@@ -13,9 +14,9 @@ const GAP = 14;
 
 // Mock Data for Inspiration Gallery
 const INSPIRATIONS = [
-  { id: '1', title: 'Lavender Calm', desc: 'Tenang & Menenangkan', img: 'https://images.unsplash.com/photo-1592659762303-90081d34b277?q=80&w=400&auto=format&fit=crop', badge: 'Populer', icon: 'heart' },
-  { id: '2', title: 'Sweet Comfort', desc: 'Lembut & Hangat', img: 'https://images.unsplash.com/photo-1525310072745-f49212b5ac6d?q=80&w=400&auto=format&fit=crop', icon: 'heart-o' },
-  { id: '3', title: 'Sunny Day', desc: 'Ceria & Optimis', img: 'https://images.unsplash.com/photo-1554522965-da255d65c3b1?q=80&w=400&auto=format&fit=crop', icon: 'heart-o' },
+  { id: '1', title: 'Lavender Calm', desc: 'Tenang & Menenangkan', img: images.lavender, badge: 'Populer', icon: 'heart' },
+  { id: '2', title: 'Sweet Comfort', desc: 'Lembut & Hangat', img: images.sweetComfort, icon: 'heart-o' },
+  { id: '3', title: 'Sunny Day', desc: 'Ceria & Optimis', img: images.sunnyDay, icon: 'heart-o' },
 ];
 
 export default function BouquetStudioLandingScreen() {
@@ -41,7 +42,7 @@ export default function BouquetStudioLandingScreen() {
           <View style={{ width: 44 }} />
         </View>
 
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 140 }}>
 
           {/* ── HERO BANNER ── */}
           <View style={s.bannerContainer}>
@@ -165,7 +166,7 @@ function InspirationCard({ item }: { item: typeof INSPIRATIONS[0] }) {
         delayPressIn={0}
       >
         <View style={s.inspireImgWrap}>
-          <Image source={{ uri: item.img }} style={s.inspireImg} />
+          <Image source={item.img} style={s.inspireImg} />
           {item.badge && (
             <View style={s.inspireBadge}>
               <Text style={s.inspireBadgeText}>{item.badge}</Text>

@@ -54,7 +54,12 @@ export default function ProfileScreen() {
 
           {/* Eco Points Dashboard */}
           <View style={styles.walletShadow}>
-            <View style={styles.walletCard}>
+            <LinearGradient
+              colors={['#7C3AED', '#3B82F6']} // Elegant soft gradient from purple to blue
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.walletCard}
+            >
               {/* Background Watermark */}
               <FontAwesome 
                 name="recycle" 
@@ -91,7 +96,7 @@ export default function ProfileScreen() {
                   <Text style={styles.walletStatValue}>Rp50.000</Text>
                 </View>
               </View>
-            </View>
+            </LinearGradient>
           </View>
 
           {/* Primary CTA */}
@@ -215,7 +220,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 32,
     overflow: 'hidden',
-    backgroundColor: brand.ecoGreenDark,
   },
   walletHeader: {
     flexDirection: 'row',

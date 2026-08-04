@@ -1,3 +1,5 @@
+import { images } from '@/constants/images';
+
 export type EcoEvent = {
   id: string;
   title: string;
@@ -9,9 +11,11 @@ export type EcoEvent = {
   month: string;
   time: string;
   location: string;
+  fullAddress: string;
   attendeesCount: number;
   quotaMax: number;
-  imageUrl: string;
+  imageUrl?: string;
+  imageSource?: any;
   isFeatured: boolean;
 };
 
@@ -22,14 +26,15 @@ export const ecoEvents: EcoEvent[] = [
     description: "Aksi kolaboratif mengangkat sampah limbah plastik sekali pakai (PET/PP) di sepanjang bantaran Sungai Cikapundung untuk disuplai kembali ke ekosistem daur ulang.",
     category: "Air Bersih",
     rewardPoints: 150,
-    dateStr: "12 Juli 2026",
+    dateStr: "12 Agustus 2026",
     day: "12",
-    month: "JUL",
+    month: "AGS",
     time: "08:00 - 12:00 WIB",
     location: "1.2 km",
-    attendeesCount: 42,
+    fullAddress: "Bantaran Sungai Cikapundung, Jl. Ir. H. Juanda, Coblong, Bandung",
+    attendeesCount: 47,
     quotaMax: 50,
-    imageUrl: "https://picsum.photos/seed/river/600/400",
+    imageSource: images.riverCleanup,
     isFeatured: true,
   },
   {
@@ -38,14 +43,15 @@ export const ecoEvents: EcoEvent[] = [
     description: "Penanaman 1000 bibit mangrove untuk mencegah abrasi pesisir utara dan memulihkan ekosistem karbon biru.",
     category: "Pesisir Lestari",
     rewardPoints: 300,
-    dateStr: "15 Juli 2026",
+    dateStr: "15 Agustus 2026",
     day: "15",
-    month: "JUL",
+    month: "AGS",
     time: "07:30 - 11:30 WIB",
     location: "4.5 km",
-    attendeesCount: 89,
+    fullAddress: "Kawasan Konservasi Hutan Bakau, Muara Gembong",
+    attendeesCount: 95,
     quotaMax: 100,
-    imageUrl: "https://picsum.photos/seed/mangrove/600/400",
+    imageSource: images.mangrovePesisir,
     isFeatured: true,
   },
   {
@@ -54,14 +60,15 @@ export const ecoEvents: EcoEvent[] = [
     description: "Menanam bibit pohon keras penahan erosi di lereng Babakan Siliwangi.",
     category: "Paru Kota",
     rewardPoints: 200,
-    dateStr: "19 Juli 2026",
+    dateStr: "19 September 2026",
     day: "19",
-    month: "JUL",
+    month: "SEP",
     time: "09:00 - 11:00 WIB",
     location: "3.0 km",
+    fullAddress: "Hutan Kota Babakan Siliwangi, Lebak Siliwangi, Bandung",
     attendeesCount: 25,
     quotaMax: 35,
-    imageUrl: "https://picsum.photos/seed/tree/600/400",
+    imageSource: images.penanamanPohon,
     isFeatured: false,
   },
   {
@@ -70,14 +77,15 @@ export const ecoEvents: EcoEvent[] = [
     description: "Workshop mengolah botol PET menjadi pot hidroponik pintar.",
     category: "Edukasi",
     rewardPoints: 100,
-    dateStr: "23 Juli 2026",
+    dateStr: "23 Oktober 2026",
     day: "23",
-    month: "JUL",
+    month: "OKT",
     time: "14:00 - 16:00 WIB",
     location: "2.1 km",
+    fullAddress: "EterniFlora Studio Workspace, Braga, Bandung",
     attendeesCount: 15,
     quotaMax: 20,
-    imageUrl: "https://picsum.photos/seed/workshop/600/400",
+    imageSource: images.edukasiUpcycling,
     isFeatured: false,
   }
 ];
