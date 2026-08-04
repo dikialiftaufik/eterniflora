@@ -30,7 +30,7 @@ export default function BouquetStudioLandingScreen() {
         style={StyleSheet.absoluteFillObject}
         end={{ x: 0, y: 0.4 }}
       />
-      
+
       <SafeAreaView style={{ flex: 1 }} edges={['top']}>
         {/* ── HEADER ── (Consistent with Events/Profile) */}
         <View style={s.header}>
@@ -42,7 +42,7 @@ export default function BouquetStudioLandingScreen() {
         </View>
 
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 60 }}>
-          
+
           {/* ── HERO BANNER ── */}
           <View style={s.bannerContainer}>
             <View style={[s.bannerCard, { backgroundColor: '#F3EFFF' }]}>
@@ -51,47 +51,52 @@ export default function BouquetStudioLandingScreen() {
                   <Text style={s.badgeTextSmall}>KUSTOMISASI</Text>
                 </View>
                 <Text style={s.bannerTitle} numberOfLines={2}>Buket Impian Penuh Makna</Text>
-                
+
                 <TouchableOpacity style={s.bannerButton} activeOpacity={0.8} onPress={() => setIsCustomizerOpen(true)}>
                   <Text style={s.bannerButtonText}>Mulai Merakit</Text>
                 </TouchableOpacity>
               </View>
-              <Image 
-                source={require('@/assets/images/diy-kit.png')} 
-                style={s.bannerImage} 
+              <Image
+                source={require('@/assets/images/diy-kit.png')}
+                style={s.bannerImage}
               />
             </View>
           </View>
 
           {/* ── START DESIGN SECTION ── */}
-          <TouchableOpacity 
-            style={s.designCard} 
+          <View style={s.sectionHeader}>
+            <Text style={s.sectionTitle}>Mulai Mendesain Bouquet Anda</Text>
+          </View>
+
+          <TouchableOpacity
+            style={s.designCard}
             activeOpacity={0.9}
             onPress={() => setIsCustomizerOpen(true)}
           >
-            <Text style={s.designTitle}>Mulai Desain Bouquet Anda</Text>
-            
-            {/* Visual Stepper */}
+            {/* Visual Stepper Workflow (Static) */}
             <View style={s.stepperRow}>
-              <StepIcon icon="asterisk" label="Bunga" sub="Jenis Bunga" active />
-              <View style={s.dashLine} />
-              <StepIcon icon="paint-brush" label="Warna" sub="Palet Warna" />
-              <View style={s.dashLine} />
-              <StepIcon icon="pagelines" label="Daun" sub="Hiasan Daun" />
-              <View style={s.dashLine} />
-              <StepIcon icon="gift" label="Pembungkus" sub="& Pita" />
+              <View style={s.stepperBackgroundLine} />
+              <StepIcon icon="asterisk" label="Bunga" sub="Pilih jenis bunga favoritmu" />
+              <StepIcon icon="paint-brush" label="Warna" sub="Tentukan palet warna bouquet" />
+              <StepIcon icon="pagelines" label="Daun" sub="Tambahkan hiasan daun" />
+              <StepIcon icon="sticky-note-o" label="Bungkus" sub="Pilih kertas pembungkus" />
             </View>
 
-            {/* Meaning Banner */}
-            <View style={s.meaningBanner}>
-              <View style={s.meaningIconCircle}>
-                <FontAwesome name="magic" size={14} color={brand.primaryDark} />
+            {/* Inner Impact Card */}
+            <View style={s.innerImpactCard}>
+              <View style={s.innerImpactIconCircle}>
+                <FontAwesome name="globe" size={24} color="#60A5FA" />
+                <FontAwesome name="star" size={10} color="#FBBF24" style={{ position: 'absolute', top: -4, left: -4 }} />
               </View>
-              <View style={s.meaningTextWrap}>
-                <Text style={s.meaningTitle}>Setiap pilihanmu bermakna</Text>
-                <Text style={s.meaningDesc}>Desain bouquet yang mencerminkan perasaan, energi, dan kepedulian terhadap bumi.</Text>
+              <View style={s.innerImpactTextWrap}>
+                <Text style={s.innerImpactTitle}>Setiap desain berdampak positif</Text>
+                <Text style={s.innerImpactDesc}>Setiap pembelian membantu mengurangi limbah plastik dan mendukung bumi yang lebih sehat. 🌱</Text>
               </View>
-              <FontAwesome name="globe" size={36} color="rgba(124, 58, 237, 0.15)" style={{ position: 'absolute', right: -10, bottom: -10 }} />
+              <View style={s.innerImpactSparkles}>
+                <FontAwesome name="star" size={12} color="#FBBF24" style={{ position: 'absolute', top: 10, right: 20 }} />
+                <FontAwesome name="star" size={8} color="#FBBF24" style={{ position: 'absolute', top: 30, right: 10 }} />
+                <FontAwesome name="star" size={14} color="#FBBF24" style={{ position: 'absolute', bottom: 10, right: 16 }} />
+              </View>
             </View>
           </TouchableOpacity>
 
@@ -99,13 +104,13 @@ export default function BouquetStudioLandingScreen() {
           <View style={s.sectionHeader}>
             <Text style={s.sectionTitle}>Inspirasi untuk Anda</Text>
             <TouchableOpacity activeOpacity={0.7}>
-              <Text style={s.seeAll}>Lihat semua <FontAwesome name="angle-right" size={14} /></Text>
+              <Text style={s.seeAll}>Lihat semua</Text>
             </TouchableOpacity>
           </View>
-          
-          <ScrollView 
-            horizontal 
-            showsHorizontalScrollIndicator={false} 
+
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
             contentContainerStyle={s.inspireScroll}
             snapToInterval={180 + 14}
             decelerationRate="fast"
@@ -132,8 +137,8 @@ export default function BouquetStudioLandingScreen() {
           </ScrollView>
 
           {/* ── IMPACT FOOTER BANNER ── */}
-          <LinearGradient 
-            colors={[brand.primaryLight, brand.primary]} 
+          <LinearGradient
+            colors={[brand.primaryLight, brand.primary]}
             start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
             style={s.impactBanner}
           >
@@ -153,20 +158,20 @@ export default function BouquetStudioLandingScreen() {
       </SafeAreaView>
 
       {/* FULL SCREEN CUSTOMIZER MODAL */}
-      <StudioCustomizer 
-        visible={isCustomizerOpen} 
-        onClose={() => setIsCustomizerOpen(false)} 
+      <StudioCustomizer
+        visible={isCustomizerOpen}
+        onClose={() => setIsCustomizerOpen(false)}
       />
     </View>
   );
 }
 
 /* ── SUBCOMPONENTS ── */
-function StepIcon({ icon, label, sub, active = false }: { icon: string, label: string, sub: string, active?: boolean }) {
+function StepIcon({ icon, label, sub }: { icon: string, label: string, sub: string }) {
   return (
     <View style={s.stepWrap}>
-      <View style={[s.stepCircle, active && s.stepCircleActive]}>
-        <FontAwesome name={icon as any} size={20} color={active ? brand.white : brand.textSecondary} />
+      <View style={s.stepCircle}>
+        <FontAwesome name={icon as any} size={18} color={brand.primary} />
       </View>
       <Text style={s.stepLabel}>{label}</Text>
       <Text style={s.stepSub}>{sub}</Text>
@@ -177,7 +182,7 @@ function StepIcon({ icon, label, sub, active = false }: { icon: string, label: s
 /* ── STYLES ── */
 const s = StyleSheet.create({
   root: { flex: 1, backgroundColor: brand.background },
-  
+
   // Header
   header: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
@@ -207,30 +212,29 @@ const s = StyleSheet.create({
     shadowColor: brand.primaryDark, shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.06, shadowRadius: 20, elevation: 5,
     marginBottom: 32,
   },
-  designTitle: { fontFamily: 'Lato_700Bold', fontSize: 18, color: brand.textPrimary, marginBottom: 20 },
-  stepperRow: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 24, paddingHorizontal: 10 },
-  dashLine: { flex: 1, height: 1, borderBottomWidth: 2, borderBottomColor: 'rgba(124, 58, 237, 0.1)', borderStyle: 'dashed', marginTop: 24, marginHorizontal: 8 },
-  
-  stepWrap: { alignItems: 'center', width: 60 },
-  stepCircle: { width: 50, height: 50, borderRadius: 25, backgroundColor: '#F8F9FA', justifyContent: 'center', alignItems: 'center', marginBottom: 8, borderWidth: 1, borderColor: '#F1F3F5' },
-  stepCircleActive: { backgroundColor: brand.primary, borderColor: brand.primary },
-  stepLabel: { fontFamily: 'Lato_700Bold', fontSize: 11, color: brand.textPrimary, marginBottom: 2 },
-  stepSub: { fontFamily: 'Lato_400Regular', fontSize: 9, color: brand.textSecondary },
+  stepperRow: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', position: 'relative', width: '100%' },
+  stepperBackgroundLine: { position: 'absolute', top: 22, left: 24, right: 24, height: 1, borderBottomWidth: 1.5, borderBottomColor: 'rgba(124, 58, 237, 0.2)', borderStyle: 'dashed' },
 
-  meaningBanner: {
-    backgroundColor: '#F8F6FC', borderRadius: 16, padding: 16, flexDirection: 'row', alignItems: 'center', overflow: 'hidden', position: 'relative'
+  stepWrap: { alignItems: 'center', flex: 1 },
+  stepCircle: { width: 44, height: 44, borderRadius: 22, backgroundColor: '#F8F6FC', justifyContent: 'center', alignItems: 'center', marginBottom: 8, borderWidth: 1.5, borderColor: 'rgba(124, 58, 237, 0.15)' },
+  stepLabel: { fontFamily: 'Lato_700Bold', fontSize: 10, color: brand.textPrimary, marginBottom: 4, textAlign: 'center' },
+  stepSub: { fontFamily: 'Lato_400Regular', fontSize: 9, color: brand.textSecondary, textAlign: 'center', lineHeight: 12 },
+
+  innerImpactCard: {
+    backgroundColor: '#F8F6FC', borderRadius: 16, padding: 16, flexDirection: 'row', alignItems: 'center', marginTop: 24, position: 'relative', overflow: 'hidden'
   },
-  meaningIconCircle: { width: 32, height: 32, borderRadius: 16, backgroundColor: brand.white, justifyContent: 'center', alignItems: 'center', marginRight: 12 },
-  meaningTextWrap: { flex: 1, zIndex: 2 },
-  meaningTitle: { fontFamily: 'Lato_700Bold', fontSize: 13, color: brand.primaryDark, marginBottom: 2 },
-  meaningDesc: { fontFamily: 'Lato_400Regular', fontSize: 11, color: brand.textSecondary, lineHeight: 16, paddingRight: 20 },
+  innerImpactIconCircle: { width: 48, height: 48, borderRadius: 24, backgroundColor: brand.white, justifyContent: 'center', alignItems: 'center', marginRight: 16, shadowColor: 'rgba(0,0,0,0.1)', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 1, shadowRadius: 4, elevation: 2 },
+  innerImpactTextWrap: { flex: 1, zIndex: 2 },
+  innerImpactTitle: { fontFamily: 'Lato_700Bold', fontSize: 13, color: brand.primaryDark, marginBottom: 4 },
+  innerImpactDesc: { fontFamily: 'Lato_400Regular', fontSize: 11, color: brand.textSecondary, lineHeight: 16, paddingRight: 32 },
+  innerImpactSparkles: { position: 'absolute', top: 0, right: 0, bottom: 0, width: 40, zIndex: 1 },
 
   // Inspiration Gallery
-  sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: HP, marginBottom: 16 },
-  sectionTitle: { fontFamily: 'Lato_700Bold', fontSize: 18, color: brand.textPrimary },
+  sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: HP, marginBottom: 14 },
+  sectionTitle: { fontFamily: 'PlayfairDisplay_700Bold', fontSize: 20, color: brand.textPrimary },
   seeAll: { fontFamily: 'Lato_700Bold', fontSize: 13, color: brand.primary },
   inspireScroll: { paddingHorizontal: HP, gap: GAP, paddingBottom: 20 },
-  
+
   inspireCard: {
     width: 180, backgroundColor: brand.white, borderRadius: 20,
     shadowColor: brand.primaryDark, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.05, shadowRadius: 10, elevation: 3,
