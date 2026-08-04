@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal, Image, useWindowDimensions } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal, Image, useWindowDimensions, Animated } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 import { brand } from '@/constants/Colors';
+import { images } from '@/constants/images';
 import { useEcoStore } from '@/store/useEcoStore';
 import BouquetCustomizerCard from '@/components/BouquetCustomizerCard';
-import { flowerOptions, colorOptions, leafOptions, wrapperOptions, ribbonOptions, getPreviewImageUrl } from '@/data/studioOptions';
+import { flowerOptions, colorOptions, leafOptions, wrapperOptions, ribbonOptions } from '@/data/studioOptions';
 
 const TOTAL_STEPS = 5;
 
@@ -31,6 +32,12 @@ export default function StudioCustomizer({ visible, onClose }: Props) {
   const { bouquetConfig, setBouquetConfig } = useEcoStore();
   const [currentStep, setCurrentStep] = useState(1);
   const { width } = useWindowDimensions();
+  
+  // Animation States for Success Popup
+  const [showSuccessOverlay, setShowSuccessOverlay] = useState(false);
+  const scaleAnim = useRef(new Animated.Value(0)).current;
+  const floatAnim = useRef(new Animated.Value(20)).current;
+  const opacityAnim = useRef(new Animated.Value(0)).current;
 
   const basePrice = 150000;
   const priceString = `Rp${basePrice.toLocaleString('id-ID')}`;
@@ -38,9 +45,27 @@ export default function StudioCustomizer({ visible, onClose }: Props) {
   const handleNext = () => {
     if (currentStep < TOTAL_STEPS) {
       setCurrentStep(prev => prev + 1);
+      setCurrentStep(s => s + 1);
     } else {
-      console.log('Proceed to checkout with:', bouquetConfig);
-      onClose();
+      // Trigger Success Micro-animation
+      setShowSuccessOverlay(true);
+      Animated.parallel([
+        Animated.spring(scaleAnim, { toValue: 1, useNativeDriver: true, friction: 6, tension: 40 }),
+        Animated.timing(floatAnim, { toValue: 0, duration: 500, useNativeDriver: true }),
+        Animated.timing(opacityAnim, { toValue: 1, duration: 300, useNativeDriver: true })
+      ]).start();
+
+      setTimeout(() => {
+        // Fade out
+        Animated.timing(opacityAnim, { toValue: 0, duration: 400, useNativeDriver: true }).start(() => {
+          setShowSuccessOverlay(false);
+          onClose();
+          // reset for next open
+          setCurrentStep(1);
+          scaleAnim.setValue(0);
+          floatAnim.setValue(20);
+        });
+      }, 2000);
     }
   };
 
@@ -148,19 +173,7 @@ export default function StudioCustomizer({ visible, onClose }: Props) {
         return (
           <View style={styles.previewContainer}>
             <View style={styles.previewImageWrap}>
-              <Image source={{ uri: getPreviewImageUrl(bouquetConfig.flowerType, bouquetConfig.petalColor) }} style={styles.previewImage} />
-              
-              <View style={styles.previewFloatingActions}>
-                <TouchableOpacity style={styles.previewActionBtn}><Text style={styles.previewActionBtnText}>3D</Text></TouchableOpacity>
-                <TouchableOpacity style={styles.previewActionBtn}><Text style={styles.previewActionBtnText}>AR</Text></TouchableOpacity>
-              </View>
-
-              <View style={styles.paginationDots}>
-                <View style={[styles.dot, styles.dotActive]} />
-                <View style={styles.dot} />
-                <View style={styles.dot} />
-                <View style={styles.dot} />
-              </View>
+              <Image source={images.preview} style={styles.previewImage} />
             </View>
 
             <View style={styles.summaryCard}>
@@ -244,6 +257,24 @@ export default function StudioCustomizer({ visible, onClose }: Props) {
             </TouchableOpacity>
           )}
         </View>
+        
+        {/* SUCCESS OVERLAY */}
+        {showSuccessOverlay && (
+          <Animated.View style={[styles.successOverlay, { opacity: opacityAnim }]}>
+            <Animated.View style={[styles.successPopup, { transform: [{ scale: scaleAnim }, { translateY: floatAnim }] }]}>
+              <View style={styles.successIconCircle}>
+                <FontAwesome name="check" size={32} color={brand.white} />
+              </View>
+              <Text style={styles.successTitle}>Karya Tersimpan</Text>
+              <Text style={styles.successSubtitle}>Bouquet personal Anda berhasil dirangkai dan masuk ke dalam tas belanja.</Text>
+              
+              <View style={styles.successBadge}>
+                <FontAwesome name="shopping-bag" size={12} color={brand.primaryDark} />
+                <Text style={styles.successBadgeText}>+1 Item Ditambahkan</Text>
+              </View>
+            </Animated.View>
+          </Animated.View>
+        )}
       </View>
     </Modal>
   );
@@ -321,35 +352,6 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     borderRadius: 24,
   },
-  previewFloatingActions: {
-    position: 'absolute',
-    right: 16,
-    bottom: 32,
-    gap: 8,
-  },
-  previewActionBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255,255,255,0.9)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: brand.primary, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.15, shadowRadius: 8, elevation: 3,
-  },
-  previewActionBtnText: {
-    fontFamily: 'Lato_700Bold', fontSize: 11, color: brand.primary,
-  },
-  paginationDots: {
-    position: 'absolute',
-    bottom: 12,
-    left: 0,
-    right: 0,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 6,
-  },
-  dot: { width: 6, height: 6, borderRadius: 3, backgroundColor: 'rgba(0,0,0,0.1)' },
-  dotActive: { width: 16, backgroundColor: brand.white, shadowColor: '#000', shadowOpacity: 0.2, shadowRadius: 2, shadowOffset: { width: 0, height: 1 } },
   
   summaryCard: {
     backgroundColor: '#F8F9FA',
@@ -393,11 +395,70 @@ const styles = StyleSheet.create({
   nextButtonText: { fontFamily: 'Lato_700Bold', fontSize: 14, color: brand.white },
   priceContainer: { flex: 1 },
   priceLabel: { fontFamily: 'Lato_700Bold', fontSize: 10, color: brand.textSecondary, letterSpacing: 1 },
-  priceValue: { fontFamily: 'PlayfairDisplay_700Bold', fontSize: 20, color: brand.primaryDark, marginTop: 4 },
+  priceValue: { fontFamily: 'PlayfairDisplay_700Bold', fontSize: 20, color: brand.primaryDark },
   checkoutButton: {
-    backgroundColor: brand.primary, flexDirection: 'row', height: 54, borderRadius: 27, paddingHorizontal: 20,
-    alignItems: 'center', justifyContent: 'center',
-    shadowColor: brand.primary, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.2, shadowRadius: 8, elevation: 4,
+    backgroundColor: brand.primaryDark,
+    paddingHorizontal: 24, paddingVertical: 14, borderRadius: 30,
+    flexDirection: 'row', alignItems: 'center'
   },
-  checkoutText: { fontFamily: 'Lato_700Bold', fontSize: 14, color: brand.white }
+  checkoutText: { fontFamily: 'Lato_700Bold', fontSize: 14, color: brand.white },
+  
+  // SUCCESS POPUP STYLES
+  successOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(30, 10, 60, 0.4)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 999,
+  },
+  successPopup: {
+    width: '80%',
+    backgroundColor: brand.white,
+    borderRadius: 24,
+    padding: 32,
+    alignItems: 'center',
+    shadowColor: brand.primaryDark,
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.15,
+    shadowRadius: 20,
+    elevation: 10,
+  },
+  successIconCircle: {
+    width: 64, height: 64, borderRadius: 32,
+    backgroundColor: brand.primary,
+    justifyContent: 'center', alignItems: 'center',
+    marginBottom: 20,
+    shadowColor: brand.primary, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 4,
+  },
+  successTitle: {
+    fontFamily: 'PlayfairDisplay_700Bold',
+    fontSize: 22,
+    color: brand.primaryDark,
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  successSubtitle: {
+    fontFamily: 'Lato_400Regular',
+    fontSize: 13,
+    color: brand.textSecondary,
+    textAlign: 'center',
+    lineHeight: 20,
+    marginBottom: 24,
+  },
+  successBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F8F6FC',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(124, 58, 237, 0.1)',
+  },
+  successBadgeText: {
+    fontFamily: 'Lato_700Bold',
+    fontSize: 13,
+    color: brand.primaryDark,
+    marginLeft: 8,
+  }
 });

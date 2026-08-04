@@ -30,7 +30,7 @@ const initialBouquetConfig: BouquetConfig = {
   flowerType: 'roses', // Set a default so preview looks good immediately
   petalColor: 'ethereal-purple',
   leafAccent: 'eucalyptus',
-  wrappingStyle: 'goni-lavender', // default
+  wrappingStyle: 'craft-coklat', // default
   ribbonColor: 'ungu-royal', // default
 };
 

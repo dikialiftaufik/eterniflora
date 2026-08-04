@@ -38,6 +38,9 @@ const pitaUngu = require('@/assets/images/pita-ungu.png') as number;
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const pitaChampagne = require('@/assets/images/pita-champagne.png') as number;
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const preview = require('@/assets/images/preview.png') as number;
+
 export const images = {
   icon,
   splashIcon,
@@ -54,4 +57,5 @@ export const images = {
   pitaSage,
   pitaUngu,
   pitaChampagne,
+  preview,
 };
